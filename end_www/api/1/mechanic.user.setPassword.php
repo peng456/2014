@@ -8,13 +8,13 @@
  
 $data = $_POST;
 
-if (!isset($data['phone']) || !isset($data['password']) || !isset($data['check_code']))
+if (!isset($data['phone']) || !isset($data['newPassword']) || !isset($data['check_code']))
 {
 	die_json_msg('parameter invalid', 10001);
 }
 
 $username = $data['phone'] ;
-$password = $data['password'] ;
+$password = $data['newPassword'] ;
 $check_code = $data['check_code'] ;
 
 //此处添加验证码验证
