@@ -20,11 +20,7 @@ if (!$item)
 	die_json_msg('parameter value error: joincode miss match', 10002);
 }
 
-json_send(array('joininfo_id'=>$item['joininfo_id'],
-				'name'=>$item['name'],
-				'stars'=>$item['stars'],
-				'work_year'=>$item['work_year'],
-				'award'=>$item['award'],
-				'workplace'=>$item['workplace'],
-				'resume'=>$item['resume']
-						));	
+json_send(array('joininfo_id'=>(int)$item['joininfo_id'],
+				'name'=>(string)$item['name'],
+				'phone'=>(string)$item['phone']
+				));
