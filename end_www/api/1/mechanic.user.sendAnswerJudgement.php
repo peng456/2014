@@ -71,6 +71,46 @@ if(!$questin_mechanic_item)
     die_json_msg('状态更新失败', 10001);
 }
 
+if ($data_judge_insert['attitude'] + 
+    $data_judge_insert['response_time'] +
+    $data_judge_insert['resolution'] >= 12 )
+{
+    $res = model('mechanic_good')->add(array(
+        'driver_user_id'=>$data_judge_insert['driver_user_id'] ,
+        'mechanic_user_id'=>$user_id ,
+        'is_push'=>0 ,
+        'a_id'=>$data_judge_insert['a_id'] ,
+        ) ) ;
+    if(!$res)
+    {
+        die_json_msg('good插入失败', 10001);
+    }
+}
+
+//因为需求改为只选一人，故赏金全给一人
+
+$res1 = model('mechanic_question')->update($q_id,array('is_soluted'=>1)) ;
+if(!$res)
+{
+    die_json_msg('question更新失败', 10001);
+}
+$q_data = model('mechanic_question')->get_one(array('q_id'=>$q_id)) ;
+if(!$res)
+{
+    die_json_msg('获取question信息失败', 10001);
+}
+$res2 = model('mechanic_answer')->update($data['a_id'],array('pay_amount'=>$q_data['reward'])) ;
+$res3 = model('mechanic_reward')->add(array(
+        'driver_user_id'=>$data_judge_insert['driver_user_id'] ,
+        'mechanic_user_id'=>$user_id ,
+        'is_push'=>0 ,
+        'reward'=>$q_data['reward'] ,
+        )) ;
+if(!$res2 || !$res3)
+{
+    die_json_msg('更新数据失败', 10001);
+}
+
 json_send();
 
 

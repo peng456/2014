@@ -84,19 +84,17 @@ foreach ($favorite_data as $key => $value)
 		) ;
 }
 
-$payment_data = $db->get_all("SELECT * FROM end_mechanic_answer WHERE mechanic_user_id = $mechanic_user_id AND ( create_time >= $noticefromtime AND create_time < $noticeendtime ) ") ;
+$payment_data = $db->get_all("SELECT * FROM end_mechanic_reward WHERE mechanic_user_id = $mechanic_user_id AND ( create_time >= $noticefromtime AND create_time < $noticeendtime ) ") ;
 foreach ($payment_data as $key => $value) 
 {
 	$notice_count++ ;
-	$q_data = model('mechanic_question')->get_one(array('q_id'=>$value['q_id'])) ;
-	$driver_user_id = $q_data['driver_user_id'] ;
-	$driverdata = model('mechanic_user')->get_one(array('user_id' => $driver_user_id) ) ;
+	$driverdata = model('mechanic_user')->get_one(array('user_id' => $value['driver_user_id']) ) ;
 	$notice_data[] = array(
 		'user_id'=>(int)$driverdata['user_id'] ,
 		'nickname'=>(string)$driverdata['nickname'] ,
 		'avatar'=>(string)$driverdata['avatar'] ,
 		'type'=>"payment",
-		'amount'=>(float)$value['pay_amount'] ,
+		'amount'=>(float)$value['reward'] ,
 		'time'=>(int)$value['create_time'] ,
 		) ;
 }
