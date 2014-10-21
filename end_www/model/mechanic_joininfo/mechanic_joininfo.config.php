@@ -24,7 +24,7 @@ $end_models['mechanic_joininfo'] = array(
 			'null'=>false,
 			'readonly'=>true
 		),
-		'joincode'=>array(
+		'join_code'=>array(
 			'name'=>'加盟码',
 			'type'=>'text',
 			'null'=>true,
@@ -68,7 +68,7 @@ $end_models['mechanic_joininfo'] = array(
 			'null'=>false,
 			'readonly'=>true
 		),
-		'joincode'=>array(
+		'join_code'=>array(
 			'name'=>'加盟码',
 			'type'=>'text',
 			'null'=>true,

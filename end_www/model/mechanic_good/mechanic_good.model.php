@@ -12,5 +12,9 @@ class MODEL_MECHANIC_GOOD extends MODEL
 		$this->table = END_MYSQL_PREFIX.'mechanic_good';
 		$this->id = 'good_id';
 	}
-
+    function add($data=array())
+    {
+        $data['create_time'] = time();
+        return parent::add($data);
+    }
 }

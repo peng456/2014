@@ -12,4 +12,5 @@ class MODEL_MECHANIC_JOININFO extends MODEL
 		$this->table = END_MYSQL_PREFIX.'mechanic_joininfo';
 		$this->id = 'joininfo_id';
 	}
+
 }

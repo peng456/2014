@@ -4,9 +4,9 @@
  *
  * @author deanmongel
  */
-$end_models['mechanic_accept'] = array(
+$end_models['mechanic_question_mechanic'] = array(
     'type' => 'list', //表示这是一个列表型的模型，对应一个数据库的表
-    'name' => '技师接受提问意向表',	//某型的名字，可以把一个栏目配置成某个模型
+    'name' => '问题技师关系列表',	//某型的名字，可以把一个栏目配置成某个模型
     'list_items'=>30, //后台每页显示
     'no_category'=>true,
     'category_fields'=> array(
@@ -18,7 +18,7 @@ $end_models['mechanic_accept'] = array(
     ),
     //在查看操作中显示的内容，查看按钮在每条数据的后面
     'fields' => array(
-        'accept_id' => array(//数据库中的字段名
+        'qm_id' => array(//数据库中的字段名
             'name' => 'ID',//显示在后台的名字
             'type' => 'text',//类型
             'null' => true
@@ -33,75 +33,62 @@ $end_models['mechanic_accept'] = array(
             'type' => 'text',
             'null' => true
         ),
-        'create_time' => array(
-            'name' => '创建时间',
-            'type' => 'text',
-            'null' => true,
-            'filter'=>'show_mechanic_accept_date'
-        ),
-        'is_push' => array(
-            'name' => '是否推送',
+        'status' => array(
+            'name' => '状态',
             'type' => 'text',
             'null' => true
         )
-
     ),
     //显示在列表中的内容
     'list_fields' => array(
-        'accept_id'=>array(//数据库中的字段名
+        'qm_id'=>array(//数据库中的字段名
             'name'=>'ID',//显示在后台的名字
             'width'=>'30',
             'sort'=>true,
             'align'=>'center',
             'search'=>true
         ),
+
         'q_id'=>array(
             'name'=>'问题ID',
-            'width'=>'auto',
-            'type'=>'text',
-            'search'=>true
-        ),
-        'mechanic_user_id'=>array(
-            'name'=>'技师ID',
             'width'=>'auto',
             'type'=>'text',
             'search'=>true,
             'search'=>true
         ),
-        'create_time'=>array(
-            'name'=>'创建时间',
-            'width'=>'auto',
-            'type'=>'text',
-            'filter'=>'show_mechanic_accept_date'
+        'mechanic_user_id' => array(
+            'name' => '技师ID',
+            'type' => 'text',
+            'null' => true
         ),
-        'is_push'=>array(
-            'name'=>'是否推送',
-            'width'=>'auto',
-            'type'=>'text'
+        'status' => array(
+            'name' => '状态',
+            'type' => 'text',
+            'null' => true
         ),
         '_options'=>array(//显示操作里面的按钮
             'name'=>'操作',
             'width'=>100,
-            'filter'=>'show_mechanic_accept_options'
+            'filter'=>'show_mechanic_question_mechanic_options'
         )
     )
 );
 
-function show_mechanic_accept_date($t)
+function show_mechanic_question_mechanic_date($t)
 {
     return date('Y-m-d H:i:s',$t);
 }
 
 //添加权限设置项
 $end_rights[] = array(
-    'name'=>'mechanic_accept',
-    'description'=>'技师接受提问意向表',
+    'name'=>'mechanic_question_mechanic',
+    'description'=>'问题技师关系列表',
     'rights'=>array('view','delete','update','add')
 );
 
-function show_mechanic_accept_options($item)
+function show_mechanic_question_mechanic_options($item)
 {
-    $id = 'accept_id';
+    $id = 'qm_id';
     end_show_view_button($item[$id]);
     end_show_edit_button($item[$id]);
     end_show_delete_button($item[$id]);
