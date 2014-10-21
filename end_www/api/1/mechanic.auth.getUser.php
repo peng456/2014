@@ -1,9 +1,9 @@
 <?php
 /**
  * 用户注册，返回token
- * API 2.2
+ * API 1.2
  *
- * @author liudanking	2013.08.09
+ * @author zhanglipeng 2014.10.17
  */
  
 $data = $_POST;
@@ -69,7 +69,9 @@ if (isset($data['firstname'])){
     $user_insert_data['firstname'] = $data['firstname'];
 }
 
-
+if (isset($data['role'])){
+    $user_insert_data['role'] = $data['role'];
+}
 
 if (isset($data['sex'])){
     if (!in_array($data['sex'],array('m','fm'))){
@@ -223,10 +225,6 @@ if ($data['role'] == "mechanic"){             //技工用户
                 'expires_in'=>0));
         }
     }
-
-
-
-
 
 }
 

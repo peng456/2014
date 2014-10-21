@@ -1,8 +1,9 @@
 <?php
 /**
- * authenticate OBD, return access token to OBD
+ * 用户注册
+ * api 1.4
  *
- * @author liudanking	2013.08.09
+ * @author zhanglipeng 2014.10.17
  */
  
 $data = $_POST;

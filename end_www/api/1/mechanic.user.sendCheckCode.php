@@ -1,7 +1,8 @@
 ﻿<?php
 /**
- * mybeacon sendCheckCode 
- * @author Liaoxinyi
+ * 发送验证码
+ * api 1.1 
+ * @author zhanglipeng 2014.10.17
  */
 //header("Content-type: text/html; charset=utf-8");
 //读取数据

@@ -1,9 +1,9 @@
 <?php
 /**
  * 修改和找回密码
- * API 2.11
+ * API 1.3
  *
- * @author liudanking	2013.08.09
+ * @author zhanglipeng	2014.10.17
  */
  
 $data = $_POST;
