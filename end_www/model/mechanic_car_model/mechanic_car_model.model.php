@@ -12,5 +12,4 @@ class MODEL_MECHANIC_CAR_MODEL extends MODEL
 		$this->table = END_MYSQL_PREFIX.'mechanic_car_model';
 		$this->id = 'car_model_id';
 	}
-
 }

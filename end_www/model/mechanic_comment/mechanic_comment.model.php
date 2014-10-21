@@ -12,5 +12,4 @@ class MODEL_MECHANIC_COMMENT extends MODEL
 		$this->table = END_MYSQL_PREFIX.'mechanic_comment';
 		$this->id = 'comment_id';
 	}
-
 }

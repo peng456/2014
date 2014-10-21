@@ -12,5 +12,4 @@ class MODEL_MECHANIC_GOOD extends MODEL
 		$this->table = END_MYSQL_PREFIX.'mechanic_good';
 		$this->id = 'good_id';
 	}
-
 }

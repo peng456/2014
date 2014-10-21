@@ -14,9 +14,11 @@ if(!in_array($data['upload_type'],array('head','question','answer','knowledge_me
 
 
 //判断accesstoken        是否过期
+
 $token = model('mechanic_token')->get_one(array('token_type'=>'user',
     'status'=>'valid',
     'access_token'=>$data['access_token']));
+
 if (!$token)
 {
     die_json_msg('accesstoken  不可用', 10001);

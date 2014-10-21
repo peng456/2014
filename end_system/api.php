@@ -32,6 +32,11 @@ define('END_MODULE_DIR',END_ROOT.'end_'.END_MODULE.'/');
 //载入 end_system 下面的核心辅助函数库
 include_once(END_SYSTEM_DIR.'helper/core.php');
 
+//载入  七牛  sdk
+include_once(END_SYSTEM_DIR.'plugin/qiniu/io.php');
+include_once(END_SYSTEM_DIR.'plugin/qiniu/rs.php');
+include_once(END_SYSTEM_DIR.'plugin/qiniu/http.php');
+
 //载入系统所需的输出相关辅助函数库，包含 ip() ,cn_substr(), en_substr() ,end_page() 等最常用的辅助函数
 helper('html');
 

@@ -28,7 +28,7 @@ $user_item = model('mechanic_user')->get_one($answer_item['mechanic_user_id']);
 
 $joininfo_item = model('mechanic_joininfo')->get_one($user_item['joininfo_id']);
 
-$answer_times  = model('mechanic_question_mechanic')->get_list(array('mechanic_user_id'=>$answer_item['mechanic_user_id']));
+$answer_times  = model('mechanic_answer')->get_list(array('mechanic_user_id'=>$answer_item['mechanic_user_id']));
 $data_send = array();
 
 

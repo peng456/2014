@@ -12,5 +12,4 @@ class MODEL_MECHANIC_JUDGESCORE extends MODEL
 		$this->table = END_MYSQL_PREFIX.'mechanic_judgescore';
 		$this->id = 'judgescore_id';
 	}
-
 }

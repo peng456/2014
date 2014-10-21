@@ -12,5 +12,4 @@ class MODEL_MECHANIC_FAVORITE extends MODEL
 		$this->table = END_MYSQL_PREFIX.'mechanic_favorite';
 		$this->id = 'favorite_id';
 	}
-
 }

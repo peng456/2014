@@ -1,3 +1,4 @@
+
 <?php
 /**
  * APP version model config
@@ -140,3 +141,4 @@ function get_html_link($url)
 	// else
 		return "<a href='$url'>$url</a>";
 }
+
