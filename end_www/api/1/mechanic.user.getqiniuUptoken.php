@@ -41,14 +41,12 @@ if(isset($data['upload_count']) && !in_array((int)$data['upload_count'],array(0,
              array_push($name_array,$key1."-". $i);
           }
         json_send(array('upToken'=>$upToken,
-                         'filename'=>$name_array,
-                         'bucket'  =>$bucket
+                         'filename'=>$name_array
                          ));
 }
 else{
     json_send(array('upToken'=>$upToken,
-        'filename'=>array($key1),
-        'bucket'  =>$bucket
+        'filename'=>array($key1)
     ));
 
 }
