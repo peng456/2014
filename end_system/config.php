@@ -56,7 +56,7 @@ if (strpos($_SERVER['SERVER_NAME'], 'localhost') !== false ) #本地调试数据
 {
 	$mysql = array(
 		'username' => "root", //数据库用户名
-		'password' => "", //密码
+		'password' => "root", //密码
 		//'password' => "root", //密码
 		'server' => "localhost", //数据库服务器地址，绝大部分是 localhost
 		'database' => "mechanic", //网站数据表所在的数据库名称 (一个数据库服务器有多个数据库)
@@ -66,7 +66,7 @@ else										#部署服务器数据库
 {
 	$mysql = array(
 		'username' => "root", //数据库用户名
-		'password' => "", //密码
+		'password' => "root", //密码
 		'server' => "localhost", //数据库服务器地址，绝大部分是 localhost
 		'database' => "mechanic", //网站数据表所在的数据库名称 (一个数据库服务器有多个数据库)
 	);
