@@ -17,5 +17,4 @@ class MODEL_MECHANIC_JUDGESCORE extends MODEL
         $data['create_time'] = time();
         return parent::add($data);
     }
-
 }

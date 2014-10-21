@@ -12,5 +12,4 @@ class MODEL_MECHANIC_CITY extends MODEL
 		$this->table = END_MYSQL_PREFIX.'mechanic_city';
 		$this->id = 'city_id';
 	}
-
 }

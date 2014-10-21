@@ -1,3 +1,4 @@
+
 <?php
 /**
  * maker model config
@@ -106,3 +107,4 @@ function show_mechanic_accept_options($item)
     end_show_edit_button($item[$id]);
     end_show_delete_button($item[$id]);
 }
+
