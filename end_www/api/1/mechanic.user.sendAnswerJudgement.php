@@ -24,7 +24,7 @@ if (!$token)
 
 $data_judge_insert = array();
 $data_judge_insert['a_id'] = (int) $data['a_id'];
-$data_judge_insert['mechanic_user_id'] = (int)$token['owner_id'];
+$data_judge_insert['driver_user_id'] = (int)$token['owner_id'];
 
 if(isset($data['resolution']))
 {
