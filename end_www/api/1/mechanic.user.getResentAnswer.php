@@ -20,22 +20,24 @@ $item = model('mechanic_token')->get_one(array('token_type'=>'user',
 if (!$item)
     die_json_msg('token invalid',10000);
 
+$from = $data['from'] ;
 $mechanic_user_id = $item['owner_id'] ;
 $count = 0 ;
 $data = array() ;
-$ma_data = $db->get_all("SELECT * FROM end_mechanic_answer WHERE mechanic_user_id = $mechanic_user_id ORDER BY create_time DESC LIMIT $data[from],10 ") ;
+
+$ma_data = $db->get_all("SELECT * FROM end_mechanic_answer WHERE mechanic_user_id = $mechanic_user_id ORDER BY create_time DESC LIMIT $from,10 ") ;
 if (!$ma_data)
-    	die_json_msg('database error',10003) ;
+    	die_json_msg('没有回答过问题',10003) ;
 
 foreach ($ma_data as $key => $value) 
 {
 	$count++ ;
 
-	$q_data = model('mechanic_question')->get_list(array('q_id'=>$value['q_id'])) ;
-	$userdata = model('mechanic_user')->get_one(array('user_id' => $q_data['driver_user_id']) ) ;
+	$q_data = model('mechanic_question')->get_one(array('q_id'=>$value['q_id'])) ;
+	$userdata = model('mechanic_user')->get_one(array('user_id' => (int)$q_data['driver_user_id']) ) ;
 
 	if (!$userdata || !$q_data )
-    		die_json_msg('database error',10003);
+    		die_json_msg('获取问题及用户信息失败',10003);
 
 	$pictures = json_decode($q_data['picture']) ;
 	$voices = json_decode($q_data['voice']) ;
@@ -69,7 +71,7 @@ foreach ($ma_data as $key => $value)
     	$pictures = json_decode($value2['picture']) ;
 		$voices = json_decode($value2['voice']) ;
 
-    	$if ($value2['mechanic_user_id'] == $value['mechanic_user_id']
+    	if ($value2['mechanic_user_id'] == $value['mechanic_user_id'])
     	{
     		$is_self = 1 ;
     	}

@@ -20,12 +20,14 @@ $item = model('mechanic_token')->get_one(array('token_type'=>'user',
 if (!$item)
     die_json_msg('token invalid',10000);
 
-$dirver_user_id = $item['owner_id'] ;
+$driver_user_id = $item['owner_id'] ;
 $count = 0 ;
+$from = $data['from'] ;
+
 $data = array() ;
-$q_data = get_all("SELECT * FROM end_mechanic_question WHERE dirver_user_id = $dirver_user_id ORDER BY create_time DESC LIMIT $data[from],10 ") ;
+$q_data = $db->get_all("SELECT * FROM end_mechanic_question WHERE driver_user_id = $driver_user_id ORDER BY create_time DESC LIMIT $from,10 ") ;
 if (!$q_data)
-    	die_json_msg('database error',10003) ;
+    	die_json_msg('没有更多问题',10003) ;
 
 foreach ($q_data as $key => $value) 
 {
@@ -43,8 +45,6 @@ foreach ($q_data as $key => $value)
 	) ;
 
 	$a_data = model('mechanic_answer')->get_list(array('q_id'=>$value['q_id'])) ;
-	if (!$a_data)
-    	die_json_msg('database error',10003) ;
 
     $mechanic_count = 0 ;
     $mechanic_data = array() ;

@@ -1,4 +1,4 @@
-<<?php
+<?php
 /**
  * APP version model class
  *

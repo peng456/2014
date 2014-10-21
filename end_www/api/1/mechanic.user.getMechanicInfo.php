@@ -24,13 +24,13 @@ $month_ago_time = time() - 30*24*3600 ;
 
 $userdata = model('mechanic_user')->get_one(array('user_id' => $data['mechanic_id']) ) ;
 $joininfo = model('mechanic_joininfo')->get_one(array('joininfo_id' => $userdata['joininfo_id'] )) ;
-$answer_times = get_query_item_count("SELECT * FROM end_mechanic_answer WHERE mechanic_user_id = $userdata[user_id] AND create_time > $month_ago_time ") ;
+$answer_times = get_query_item_count("SELECT COUNT(*) FROM end_mechanic_answer WHERE mechanic_user_id = $userdata[user_id] AND create_time > $month_ago_time ") ;
 
 if (!$joininfo || !$userdata || $answer_times === NULL )
     die_json_msg('获取用户信息失败',10003);
 
 $workbrand = model('mechanic_car_brand')->get_one(array('car_brand_id'=>$joininfo['workbrand'])) ;
-$favorite_times = get_query_item_count("SELECT * FROM end_mechanic_favorite WHERE mechanic_user_id = $userdata[user_id]") ;
+$favorite_times = get_query_item_count("SELECT COUNT(*) FROM end_mechanic_favorite WHERE mechanic_user_id = $userdata[user_id]") ;
 
 $workcity = model('mechanic_city')->get_one(array('city_id'=>$joininfo['workcity'])) ;
 $workcityname = $workcity['city_name'] ;

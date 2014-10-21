@@ -31,7 +31,7 @@ foreach ($mechanic_data as $key => $value)
 {
 	$userdata = model('mechanic_user')->get_one(array('user_id' => $value['mechanic_user_id']) ) ;
 	$joininfo = model('mechanic_joininfo')->get_one(array('joininfo_id' => $userdata['joininfo_id'] )) ;
-	$answer_times = get_query_item_count("SELECT * FROM end_mechanic_answer WHERE mechanic_user_id = $userdata[user_id] AND create_time > $month_ago_time ") ;
+	$answer_times = get_query_item_count("SELECT COUNT(*) FROM end_mechanic_answer WHERE mechanic_user_id = $userdata[user_id] AND create_time > $month_ago_time ") ;
 
 	if (!$item || !$userdata || $answer_times === NULL )
     die_json_msg('get user data error',10003);

@@ -20,7 +20,7 @@ $item = model('mechanic_token')->get_one(array('token_type'=>'user',
 if (!$item)
     die_json_msg('token invalid',10000);
 
-if ($q_id == 0)
+if ($data['q_id'] == 0)
 {
 	$q_data = $db->get_all("SELECT q_id FROM end_mechanic_question WHERE is_soluted = 0 AND is_accept = 0") ;
 	if (!$q_data)
@@ -38,7 +38,7 @@ if ($q_id == 0)
 	$pictures = json_decode($select_qdata['picture']) ;
 	$voices = json_decode($select_qdata['voice']) ;
 	$month_ago_time = time() - 30*24*3600 ;
-	$question_count = get_query_item_count("SELECT * FROM end_mechanic_question WHERE driver_user_id = $userdata[user_id] AND create_time > $month_ago_time ") ;
+	$question_count = get_query_item_count("SELECT COUNT(*) FROM end_mechanic_question WHERE driver_user_id = $userdata[user_id] AND create_time > $month_ago_time ") ;
 
 	if (!$question_count)
     	die_json_msg('database error',10003);
@@ -85,7 +85,6 @@ if ($q_id == 0)
 else
 {
 	$q_data = model('mechanic_question')->get_one(array('q_id'=>$data['q_id'])) ;
-
 	$userdata = model('mechanic_user')->get_one(array('user_id'=>$q_data['driver_user_id'])) ;
 
 	if (!$q_data || !$userdata)
@@ -94,7 +93,7 @@ else
 	$pictures = json_decode($q_data['picture']) ;
 	$voices = json_decode($q_data['voice']) ;
 	$month_ago_time = time() - 30*24*3600 ;
-	$question_count = get_query_item_count("SELECT * FROM end_mechanic_question WHERE dirver_user_id = $userdata[user_id] AND create_time > $month_ago_time ") ;
+	$question_count = get_query_item_count("SELECT COUNT(*) FROM end_mechanic_question WHERE driver_user_id = $userdata[user_id] AND create_time > $month_ago_time ") ;
 
 	if (!$question_count)
     	die_json_msg('database error',10003);
