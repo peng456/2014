@@ -8,7 +8,7 @@
  
 $data = $_POST;
 
-if (!isset($data['access_token']) || !isset($data['a_id']) || !is_numeric($data['a_id']))
+if (!isset($data['access_token']) || !isset($data['a_id']) || !is_numeric($data['a_id']) || !is_numeric($data['reward']))
 {
 	die_json_msg('parameter invalid', 10001);
 }
