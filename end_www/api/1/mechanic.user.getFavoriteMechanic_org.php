@@ -16,11 +16,13 @@ if (!isset($data['access_token']) )
 $item = model('mechanic_token')->get_one(array('token_type'=>'user',
                                             'access_token'=>$data['access_token'],
                                             'status'=>'valid'));
-if (!$item){
+
+if (!$item)
     die_json_msg('token invalid',10000);
-}
+
 $user_id = $item['owner_id'] ;
-$favorite_mechanic = model('mechanic_favorite')->get_list(array('driver_user_id'=>$user_id,'status'=>1)) ;
+
+$favorite_mechanic = model('mechanic_favorite')->get_list(array('driver_user_id'=>$user_id)) ;
 
 if ($favorite_mechanic)
 {
@@ -48,18 +50,17 @@ if ($favorite_mechanic)
 }
 else
 {
+	//$m_data = $db->get_all("SELECT user_id FROM end_mechanic_user WHERE role = \'mechanic\'") ;
 	$m_data = $db->get_all("SELECT user_id FROM end_mechanic_user WHERE role = 'mechanic'") ;
 	if (!$m_data)
     	die_json_msg('mechanic database error',10003) ;
-    $mechanic_count = count($m_data);
-    $return_count =  ($mechanic_count>5)?5:$mechanic_count;
-    $resdata = array() ;
-	for ($i=0; $i < $return_count; $i++)
-	{
-		//技师id
-        $seletc_mid = mt_rand(0,count($m_data)-1) ;
 
-        $userdata = model('mechanic_user')->get_one(array('user_id' => $m_data[$seletc_mid]['user_id']) ) ;
+    $resdata = array() ;
+	for ($i=0; $i < 5; $i++) 
+	{ 
+		
+		$seletc_mid = mt_rand(0,count($m_data)-1) ;
+		$userdata = model('mechanic_user')->get_one(array('user_id' => $seletc_mid) ) ;
 		$joininfo = model('mechanic_joininfo')->get_one(array('joininfo_id' => $userdata['joininfo_id'] )) ;
 
 		if (!$userdata || !$joininfo )
@@ -70,9 +71,6 @@ else
 			'name'=>(string)$joininfo['name'] ,
 			'avatar'=>(string)$userdata['avatar'] ,
 			) ;
-
-        unset($m_data[$seletc_mid]);
-        sort($m_data);
 	}
-	json_send(array('is_favorite'=>0,'count'=>count($resdata),'data'=>$resdata) ) ;
+	json_send(array('is_favorite'=>0,'count'=>5,'data'=>$resdata) ) ;
 }

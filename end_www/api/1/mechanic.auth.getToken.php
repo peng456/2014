@@ -13,6 +13,11 @@ if (!isset($data['phone']) || !isset($data['password']))
 	die_json_msg('parameter invalid', 10001);
 }
 
+if(!preg_match("/1[34578]{1}\d{9}$/",$data['phone']))
+{
+    die_json_msg('参数错误', 10100);
+}
+
 $username = $data['phone'];
 $password = $data['password'];
 $item = model('mechanic_user')->get_one(array('username'=>$username, 'password'=>$password));

@@ -8,7 +8,7 @@
  
 $data = $_POST;
 
-if (!isset($data['access_token']) || !isset($data['from']) )
+if (!isset($data['access_token']) || !isset($data['from']) || !is_numeric($data['from']) )
 {
 	die_json_msg('parameter invalid', 10001);
 }
@@ -62,7 +62,7 @@ foreach ($q_data as $key => $value)
 			'name'=>(string)$joininfo['name'] ,
 			'avatar'=>(string)$userdata['avatar'] ,
 			'a_id'=>(int)$value2['a_id'] ,
-			) ;
+			);
     }
 
     $data[] = array('question_data'=>$question_data,'mechanic_count'=>(int)$mechanic_count,'mechanic_data'=>$mechanic_data) ;

@@ -8,7 +8,7 @@
  
 $data = $_POST;
 
-if (!isset($data['access_token']) ||!isset($data['mechanic_id']))
+if (!isset($data['access_token']) ||!isset($data['mechanic_id']) || !is_numeric($data['mechanic_id']))
 {
 	die_json_msg('parameter invalid', 10001);
 }
@@ -40,9 +40,9 @@ while($workcity['pid'] != 0)
 	$workcity = model('mechanic_city')->get_one(array('city_id'=>$workcity['pid'])) ;
 	$workcityname = $workcity['city_name'].$workcityname ;
 }
+ $workplacename = model('mechanic_garage')->get_one($joininfo['workplace']);
 
-
-if (!$workcity || !$workbrand || !$favorite_times )
+if (!$workcity || !$workbrand || !$workplacename )
     die_json_msg('获取技师详细信息失败',10003);
 
 $data = array(
@@ -56,7 +56,7 @@ $data = array(
 		'work_year'=>(int)$joininfo['work_year'] ,
 		'workbrand'=>(string)$workbrand['brand_name'] ,
 		'workcity'=>(string)$workcityname ,
-		'workplace'=>(string)$joininfo['workplace'] ,
+		'workplace'=>(string)$workplacename['garage_name'] ,
 		'technical_title'=>(string)$joininfo['technical_title'] ,
 		'birth_year'=>(int)$joininfo['birth_year'] ,
 		'education'=>(string)$joininfo['education'] ,

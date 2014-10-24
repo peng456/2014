@@ -8,7 +8,7 @@
  
 $data = $_POST;
 
-if (!isset($data['access_token']) || !isset($data['from']) )
+if (!isset($data['access_token']) || !isset($data['from']) || !is_numeric($data['from']))
 {
 	die_json_msg('parameter invalid', 10001);
 }
@@ -28,7 +28,7 @@ $data = array() ;
 $ma_data = $db->get_all("SELECT * FROM end_mechanic_answer WHERE mechanic_user_id = $mechanic_user_id ORDER BY create_time DESC LIMIT $from,10 ") ;
 if (!$ma_data)
     	die_json_msg('没有回答过问题',10003) ;
-
+var_dump($ma_data);
 foreach ($ma_data as $key => $value) 
 {
 	$count++ ;

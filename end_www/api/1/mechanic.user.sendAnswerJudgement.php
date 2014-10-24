@@ -28,17 +28,25 @@ $data_judge_insert['driver_user_id'] = (int)$token['owner_id'];
 
 if(isset($data['resolution']))
 {
+    if(!is_numeric($data['resolution'])){
+        die_json_msg('parameter invalid', 10001);
+    }
     $data_judge_insert['resolution'] = (int)$data['resolution'];
-
 }
 
 if(isset($data['response_time']))
 {
-    $data_judge_insert['response_time'] = (int)$data['response_time'];
+      if(!is_numeric($data['response_time'])){
+          die_json_msg('parameter invalid', 10001);
+      }
+          $data_judge_insert['response_time'] = (int)$data['response_time'];
 }
 
 if(isset($data['attitude']))
 {
+    if(!is_numeric($data['attitude'])){
+        die_json_msg('parameter invalid', 10001);
+    }
     $data_judge_insert['attitude'] = (int)$data['attitude'];
 }
 

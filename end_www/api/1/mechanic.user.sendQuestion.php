@@ -65,7 +65,7 @@ if(!$question_item)
 
 json_send(array(
 	'q_id'=>$question_item 
-	)) ;
+	));
 
 
 

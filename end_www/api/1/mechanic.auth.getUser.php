@@ -12,7 +12,10 @@ if (!isset($data['phone']) ||!isset($data['role']) || !isset($data['password']) 
 {
 	die_json_msg('parameter invalid', 10001);
 }
-
+if(!preg_match("/1[34578]{1}\d{9}$/",$data['phone']))
+{
+    die_json_msg('参数错误', 10100);
+}
 if (!in_array($data['role'],array('driver','mechanic'))){
     die_json_msg('parameter invalid', 10001);
 }
@@ -37,7 +40,6 @@ if ($user_data)
 //此处验证  验证码
 $time = time() ;
 $str_sql = "SELECT * FROM end_mechanic_user_checkcode WHERE phone = $data[phone]  and ( status = 'valid' and expires_in > $time ) ";
-
 
 $checkcode_data = $db->get_all($str_sql) ;
 
@@ -70,6 +72,9 @@ if (isset($data['firstname'])){
 }
 
 if (isset($data['role'])){
+    if(!in_array($data['role'],array('driver','mechanic'))){
+        die_json_msg('参数错误', 10001);
+    }
     $user_insert_data['role'] = $data['role'];
 }
 
@@ -82,7 +87,11 @@ if (isset($data['sex'])){
 }
 
 if (isset($data['years'])){
-    $user_insert_data['years'] = $data['years'];
+      if(!is_numeric($data['years']))
+      {
+          die_json_msg('parameter invalid', 10001);
+      }
+    $user_insert_data['years'] = (int)$data['years'];
 }
 
 if (isset($data['car'])){
@@ -98,6 +107,10 @@ if ($data['role'] == "mechanic"){             //技工用户
 
     if(isset( $data['work_year']))
     {
+        if(!is_numeric($data['work_year']))
+        {
+            die_json_msg('parameter invalid', 10001);
+        }
         $joininfo_update_data['work_year'] = $data['work_year'];
     }
 

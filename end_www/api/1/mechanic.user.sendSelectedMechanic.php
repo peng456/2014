@@ -8,7 +8,7 @@
  
 $data = $_POST;
 
-if (!isset($data['access_token']) ||!isset($data['count'])||!isset($data['q_id'])||!isset($data['selected_mechanic']))
+if (!isset($data['access_token']) ||!isset($data['count']) || !is_numeric($data['count'])||!isset($data['q_id']) || !is_numeric($data['q_id'])|| !isset($data['selected_mechanic']))
 {
 	die_json_msg('parameter invalid', 10001);
 }
@@ -19,7 +19,7 @@ $item = model('mechanic_token')->get_one(array('token_type'=>'user',
 $driver_user_id = $item['owner_id'] ;
 $selected_mechanic = json_decode($data['selected_mechanic'],true) ;
 if(!$selected_mechanic)
-	die_json_msg('selected_mechanic format error',000000) ;
+	die_json_msg('selected_mechanic format error',100000) ;
 
 foreach ($selected_mechanic['selected_mechanic'] as $key => $value) 
 {

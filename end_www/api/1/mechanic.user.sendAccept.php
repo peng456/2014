@@ -33,7 +33,6 @@ if (!$accept_item)
     die_json_msg('数据更新失败', 10001);
 }
 
-
 json_send(
         array()
 );

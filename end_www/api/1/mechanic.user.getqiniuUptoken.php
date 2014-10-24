@@ -24,8 +24,6 @@ if(!in_array($data['upload_type'],array('head','question','answer','knowledge_me
   }
 
 
-
-
 $bucket = 'machinist';
 $accessKey = 'st_XjWAVENJCjDDWOYfMpxB3YtOo4Dt4g4kmyxhQ';
 $secretKey = '7TgfT33PFOoxKgQ7nlNY8ovFoHcek3pjMfjBMgqA';
@@ -36,7 +34,7 @@ $upToken = $putPolicy->Token(null);
 
 $key1 = $data['upload_type'].time().rand(0,1000);
 
-if(isset($data['upload_count']) && !in_array((int)$data['upload_count'],array(0,1)))
+if(isset($data['upload_count']) && (!in_array((int)$data['upload_count'],array(0,1))))
 {
       $name_array = array();
      for($i = 1; $i <=((int)$data['upload_count'] ) ; $i++){
@@ -48,10 +46,5 @@ if(isset($data['upload_count']) && !in_array((int)$data['upload_count'],array(0,
                          ));
 }
 else{
-    json_send(array('upToken'=>$upToken,
-        'filename'=>array($key1),
-        'bucket'  =>$bucket
-    ));
-
+    json_send(array('upToken'=>$upToken,'filename'=>array($key1),'bucket'=>$bucket));
 }
-

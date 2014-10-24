@@ -13,6 +13,10 @@ if (!isset($data['type'])||!isset($data['parent']))
 	die_json_msg('parameter invalid', 10001);
 }
 
+if(!in_array($data['type'],array('brand','series','model'))){
+    die_json_msg('参数错误', 10001);
+}
+
 switch ($data['type']) {
 	case 'brand':
 		$brand_data = model('mechanic_car_brand')->get_list() ;
