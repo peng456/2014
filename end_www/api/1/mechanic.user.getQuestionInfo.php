@@ -10,7 +10,7 @@ $data = $_POST;
 
 if (!isset($data['access_token']) ||!isset($data['q_id']) || !is_numeric($data['q_id']))
 {
-	die_json_msg('parameter invalid', 10001);
+	die_json_msg('参数错误', 10100);
 }
 
 $item = model('mechanic_token')->get_one(array('token_type'=>'user',
@@ -18,13 +18,13 @@ $item = model('mechanic_token')->get_one(array('token_type'=>'user',
                                             'status'=>'valid'));
 
 if (!$item)
-    die_json_msg('token invalid',10000);
+    die_json_msg('access_token不可用',10600);
 
 if ($data['q_id'] == 0)
 {
 	$q_data = $db->get_all("SELECT q_id FROM end_mechanic_question WHERE is_soluted = 0 AND is_accept = 0") ;
 	if (!$q_data)
-    	die_json_msg('database error',10003) ;
+    	die_json_msg('系统没有待解决问题',30200) ;
 
 	//此处添加问题筛选程序
 	$seletc_qid = mt_rand(0,count($q_data)-1) ;
@@ -33,15 +33,15 @@ if ($data['q_id'] == 0)
 	$userdata = model('mechanic_user')->get_one(array('user_id'=>$select_qdata['driver_user_id'])) ;
 
 	if (!$select_qdata || !$userdata)
-    	die_json_msg('database error',10003);
+    	die_json_msg('无此问题或无提问者数据',10101);
 
 	$pictures = json_decode($select_qdata['picture']) ;
 	$voices = json_decode($select_qdata['voice']) ;
 	$month_ago_time = time() - 30*24*3600 ;
 	$question_count = get_query_item_count("SELECT COUNT(*) FROM end_mechanic_question WHERE driver_user_id = $userdata[user_id] AND create_time > $month_ago_time ") ;
 
-	if (!$question_count)
-    	die_json_msg('database error',10003);
+	if ($question_count === null)
+    	die_json_msg('question表查询失败',10101);
 
 
 	$res_data = array(
@@ -62,7 +62,7 @@ if ($data['q_id'] == 0)
 	$select_qdata = model('mechanic_question')->get_one(array('q_id'=>$q_data[$seletc_qid]['q_id'])) ;
 	$res = model('mechanic_question')->update($select_qdata['q_id'],array('view_count'=>((int)$select_qdata['view_count']+1)) ) ;
 	if (!$select_qdata || !$res)
-    	die_json_msg('database error',10003);
+    	die_json_msg('question表查询或更新失败',10101);
 
     if ($select_qdata['type'] == 0 && $select_qdata['view_count'] == 19)
     {
@@ -70,13 +70,13 @@ if ($data['q_id'] == 0)
     	$mechanic_data = $db->get_list("SELECT * FROM end_mechanic_accept WHERE q_id = $select_qdata[q_id] ORDER BY create_time LIMIT 0, $data[quickcount] ") ;
     	$res = model('mechanic_question')->update($select_qdata['q_id'],array('is_accept'=>1)) ;
     	if (!$mechanic_data || !$res)
-    		die_json_msg('database error',10003);
+    		die_json_msg('accept表查询或question更新失败',10101);
 
     	foreach ($mechanic_data as $key => $value) 
     	{
     		$res = model('mechanic_question_mechanic')->add(array('q_id'=>$value['q_id'],'mechanic_user_id'=>$value['mechanic_user_id'],'status'=>0)) ;
     		if (!$res)
-    			die_json_msg('database error',10003);
+    			die_json_msg('question_mechanic表增加失败',10003);
     	}
     }
 
@@ -95,8 +95,8 @@ else
 	$month_ago_time = time() - 30*24*3600 ;
 	$question_count = get_query_item_count("SELECT COUNT(*) FROM end_mechanic_question WHERE driver_user_id = $userdata[user_id] AND create_time > $month_ago_time ") ;
 
-	if (!$question_count)
-    	die_json_msg('database error',10003);
+	if ($question_count === null)
+    	die_json_msg('question表查询失败',10101);
 
 	$res_data = array(
 		'q_id'=>(int)$data['q_id'] ,

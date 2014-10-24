@@ -10,7 +10,7 @@ $data = $_POST;
 
 if (!isset($data['access_token']) ||!isset($data['q_id']) || !is_numeric($data['q_id']))
 {
-	die_json_msg('parameter invalid', 10001);
+	die_json_msg('参数错误', 10100);
 }
 
 $item = model('mechanic_token')->get_one(array('token_type'=>'user',
@@ -18,13 +18,13 @@ $item = model('mechanic_token')->get_one(array('token_type'=>'user',
                                             'status'=>'valid'));
 
 if (!$item)
-    die_json_msg('token invalid',10000);
+    die_json_msg('access_token不可用',10600);
 
 $mechanic_user_id = $item['owner_id'] ;
 
 $q_data = model('mechanic_question')->get_one(array('q_id'=>$data['q_id']) ) ;
 if (!$q_data )
-    die_json_msg('问题id无效',00000);
+    die_json_msg('问题id无效',20600);
 
 if ($q_data['is_accept'] == 0)
 {

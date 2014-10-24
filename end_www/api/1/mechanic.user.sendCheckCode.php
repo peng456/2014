@@ -93,11 +93,11 @@ if($gets['SubmitResult']['code'] == 2 ){
 
     $return  = $db->query($sql_str);
     if(! $return) {
-        die_json_msg('数据库更新失败',10101);
+        die_json_msg('user_checkcode表更新失败',10101);
     }
 
     if(!($id=model('mechanic_user_checkcode')->add($data_checkcode))) {
-        die_json_msg('数据库更新失败',10101);
+        die_json_msg('user_checkcode表增加失败',10101);
     }
     json_send();
 

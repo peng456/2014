@@ -10,7 +10,7 @@ $data = $_POST;
 
 if (!isset($data['access_token']) || !isset($data['q_id']) || !is_numeric($data['q_id']))
 {
-	die_json_msg('parameter invalid', 10001);
+	die_json_msg('参数错误', 10100);
 }
 
 //判断accesstoken        是否过期
@@ -19,10 +19,8 @@ $token = model('mechanic_token')->get_one(array('token_type'=>'user',
     'access_token'=>$data['access_token']));
 if (!$token)
 {
-    die_json_msg('accesstoken  不可用', 10001);
+    die_json_msg('access_token不可用', 10600);
 }
-
-
 
 $accept_item  = model('mechanic_accept')->add(array('q_id'=>(int)$data['q_id'],'mechanic_user_id'=>(int)$token['owner_id'],'create_time'=>time(),'is_push'=>0));
 
@@ -30,7 +28,7 @@ $accept_item  = model('mechanic_accept')->add(array('q_id'=>(int)$data['q_id'],'
 
 if (!$accept_item)
 {
-    die_json_msg('数据更新失败', 10001);
+    die_json_msg('accept表增加失败', 10100);
 }
 
 json_send(

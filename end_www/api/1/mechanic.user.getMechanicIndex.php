@@ -10,7 +10,7 @@ $data = $_POST;
 
 if (!isset($data['access_token']) ||!isset($data['from']) || !is_numeric($data['from']))
 {
-	die_json_msg('parameter invalid', 10001);
+	die_json_msg('参数错误', 10100);
 }
 
 $item = model('mechanic_token')->get_one(array('token_type'=>'user',
@@ -18,14 +18,14 @@ $item = model('mechanic_token')->get_one(array('token_type'=>'user',
                                             'status'=>'valid'));
 
 if (!$item)
-    die_json_msg('token invalid',10000);
+    die_json_msg('access_token不可用',10600);
 
 $mechanic_user_id = $item['owner_id'] ;
 $userdata = model('mechanic_user')->get_one(array('user_id' => $mechanic_user_id) ) ;
 $joininfo = model('mechanic_joininfo')->get_one(array('joininfo_id' => $userdata['joininfo_id'] )) ;
 
 if (!$joininfo || !$userdata )
-    die_json_msg('database error',10003);
+    die_json_msg('user表或joininfo表无技师数据',20100);
 
 $todayfromtime  = mktime(0,0,0,date('m'),date('d'),date('Y'));
 $todayendtime   = $todayfromtime + 24*3600 ;

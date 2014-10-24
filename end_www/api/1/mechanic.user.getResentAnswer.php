@@ -10,7 +10,7 @@ $data = $_POST;
 
 if (!isset($data['access_token']) || !isset($data['from']) || !is_numeric($data['from']))
 {
-	die_json_msg('parameter invalid', 10001);
+	die_json_msg('参数错误', 10100);
 }
 
 $item = model('mechanic_token')->get_one(array('token_type'=>'user',
@@ -18,7 +18,7 @@ $item = model('mechanic_token')->get_one(array('token_type'=>'user',
                                             'status'=>'valid'));
 
 if (!$item)
-    die_json_msg('token invalid',10000);
+    die_json_msg('access_token不可用',10600);
 
 $from = $data['from'] ;
 $mechanic_user_id = $item['owner_id'] ;
@@ -27,8 +27,8 @@ $data = array() ;
 
 $ma_data = $db->get_all("SELECT * FROM end_mechanic_answer WHERE mechanic_user_id = $mechanic_user_id ORDER BY create_time DESC LIMIT $from,10 ") ;
 if (!$ma_data)
-    	die_json_msg('没有回答过问题',10003) ;
-var_dump($ma_data);
+    	die_json_msg('没有回答过问题',30500) ;
+
 foreach ($ma_data as $key => $value) 
 {
 	$count++ ;
@@ -37,7 +37,7 @@ foreach ($ma_data as $key => $value)
 	$userdata = model('mechanic_user')->get_one(array('user_id' => (int)$q_data['driver_user_id']) ) ;
 
 	if (!$userdata || !$q_data )
-    		die_json_msg('获取问题及用户信息失败',10003);
+    		die_json_msg('获取问题及用户信息失败',10101);
 
 	$pictures = json_decode($q_data['picture']) ;
 	$voices = json_decode($q_data['voice']) ;
@@ -54,7 +54,7 @@ foreach ($ma_data as $key => $value)
 	) ;
 
 	$a_data = model('mechanic_answer')->get_list(array('q_id'=>$value['q_id'])) ;
-	if (!$a_data)
+	if ($a_data === null)
     	die_json_msg('database error',10003) ;
 
     $answer_count = 0 ;
@@ -66,7 +66,7 @@ foreach ($ma_data as $key => $value)
 		$joininfo = model('mechanic_joininfo')->get_one(array('joininfo_id' => $userdata['joininfo_id'] )) ;
 
 		if (!$userdata || !$joininfo )
-    		die_json_msg('database error',10003);
+    		die_json_msg('user表或joininfo表无技师数据',20100);
 
     	$pictures = json_decode($value2['picture']) ;
 		$voices = json_decode($value2['voice']) ;

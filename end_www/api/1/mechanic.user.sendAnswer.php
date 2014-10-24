@@ -10,7 +10,7 @@ $data = $_POST;
 
 if (!isset($data['access_token']) || !isset($data['q_id'])|| !is_numeric($data['q_id']) || !isset($data['msg']))
 {
-    die_json_msg('parameter invalid', 10001);
+    die_json_msg('参数错误', 10100);
 }
 
 
@@ -20,7 +20,7 @@ $token = model('mechanic_token')->get_one(array('token_type'=>'user',
     'access_token'=>$data['access_token']));
 if (!$token)
 {
-    die_json_msg('access_token  不可用', 10001);
+    die_json_msg('access_token不可用', 10600);
 }
 
 
@@ -52,11 +52,9 @@ $data_insert_answer ['create_time'] =  time();
 
 
 $answer_item = model('mechanic_answer')->add($data_insert_answer);
-
-
 if(!$answer_item)
 {
-    die_json_msg('答案上传失败', 10001);
+    die_json_msg('answer表增加失败', 10101);
 
 }
 $q_id    = $data['q_id'];
@@ -66,10 +64,8 @@ $questin_mechanic_sql =  "update end_mechanic_question_mechanic set  status =  1
 $questin_mechanic_item = $db->query($questin_mechanic_sql);
 if(!$questin_mechanic_item)
 {
-    die_json_msg('状态更新失败', 10001);
+    die_json_msg('question_mechanic表更新失败', 10101);
 }
-
-
 json_send(array(
 	'a_id'=>$answer_item
 	)) ;

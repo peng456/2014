@@ -10,14 +10,14 @@ $data = $_POST;
 
 if (!isset($data['access_token']) )
 {
-	die_json_msg('parameter invalid', 10001);
+	die_json_msg('参数错误', 10100);
 }
 
 $item = model('mechanic_token')->get_one(array('token_type'=>'user',
                                             'access_token'=>$data['access_token'],
                                             'status'=>'valid'));
 if (!$item){
-    die_json_msg('token invalid',10000);
+    die_json_msg('access_token不可用',10600);
 }
 $user_id = $item['owner_id'] ;
 $favorite_mechanic = model('mechanic_favorite')->get_list(array('driver_user_id'=>$user_id,'status'=>1)) ;
@@ -34,7 +34,7 @@ if ($favorite_mechanic)
 		$joininfo = model('mechanic_joininfo')->get_one(array('joininfo_id' => $userdata['joininfo_id'] )) ;
 
 		if (!$userdata || !$joininfo )
-    		die_json_msg('user database error',10003);
+    		die_json_msg('user表或joininfo表无技师数据',20100);
 
 		$resdata[] = array(
 			'id'=>(int)$userdata['user_id'] ,
@@ -50,7 +50,7 @@ else
 {
 	$m_data = $db->get_all("SELECT user_id FROM end_mechanic_user WHERE role = 'mechanic'") ;
 	if (!$m_data)
-    	die_json_msg('mechanic database error',10003) ;
+    	die_json_msg('数据库没有技师',10101) ;
     $mechanic_count = count($m_data);
     $return_count =  ($mechanic_count>5)?5:$mechanic_count;
     $resdata = array() ;
@@ -63,7 +63,7 @@ else
 		$joininfo = model('mechanic_joininfo')->get_one(array('joininfo_id' => $userdata['joininfo_id'] )) ;
 
 		if (!$userdata || !$joininfo )
-    		die_json_msg('mech user database error',10003);
+    		die_json_msg('user表或joininfo表无技师数据',20100);
 
 		$resdata[] = array(
 			'id'=>(int)$userdata['user_id'] ,

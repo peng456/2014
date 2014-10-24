@@ -10,11 +10,11 @@ $data = $_POST;
 
 if (!isset($data['type'])||!isset($data['parent']))
 {
-	die_json_msg('parameter invalid', 10001);
+	die_json_msg('参数错误', 10100);
 }
 
 if(!in_array($data['type'],array('brand','series','model'))){
-    die_json_msg('参数错误', 10001);
+    die_json_msg('参数错误', 10100);
 }
 
 switch ($data['type']) {

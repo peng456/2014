@@ -10,7 +10,7 @@ $data = $_POST;
 
 if (!isset($data['join_code']))
 {
-	die_json_msg('parameter invalid', 10001);
+	die_json_msg('参数错误', 10100);
 }
 
 $joincode = $data['join_code'];
@@ -18,7 +18,7 @@ $joincode = $data['join_code'];
 $item = model('mechanic_joininfo')->get_one(array('join_code'=>$joincode));
 if (!$item)
 {
-	die_json_msg('parameter value error: joincode miss match', 10002);
+	die_json_msg('加盟码错误', 10500);
 }
 
 json_send(array('joininfo_id'=>(int)$item['joininfo_id'],

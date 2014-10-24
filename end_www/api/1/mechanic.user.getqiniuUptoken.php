@@ -4,7 +4,7 @@ $data = $_POST;
 
 if(!isset($data['upload_type']))
 {
-    die_json_msg('参数错误', 10001);
+    die_json_msg('参数错误', 10100);
 }
 
 if(isset($data['access_token'])){
@@ -15,12 +15,12 @@ if(isset($data['access_token'])){
 
     if (!$token)
     {
-        die_json_msg('accesstoken  不可用', 10001);
+        die_json_msg('access_token不可用', 10600);
     }
 }
 
 if(!in_array($data['upload_type'],array('head','question','answer','knowledge_mechanic','knowledge_bid'))){
-    die_json_msg('参数错误', 10001);
+    die_json_msg('参数错误', 10100);
   }
 
 

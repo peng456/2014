@@ -10,7 +10,7 @@ $data = $_POST;
 
 if (!isset($data['access_token']) || !isset($data['a_id']) || !is_numeric($data['a_id']) || !is_numeric($data['reward']))
 {
-	die_json_msg('parameter invalid', 10001);
+	die_json_msg('参数错误', 10100);
 }
 
 //判断accesstoken        是否过期
@@ -19,7 +19,7 @@ $token = model('mechanic_token')->get_one(array('token_type'=>'user',
     'access_token'=>$data['access_token']));
 if (!$token)
 {
-    die_json_msg('accesstoken  不可用', 10001);
+    die_json_msg('access_token不可用', 10600);
 }
 
 $data_judge_insert = array();
@@ -29,7 +29,7 @@ $data_judge_insert['driver_user_id'] = (int)$token['owner_id'];
 if(isset($data['resolution']))
 {
     if(!is_numeric($data['resolution'])){
-        die_json_msg('parameter invalid', 10001);
+        die_json_msg('参数错误', 10100);
     }
     $data_judge_insert['resolution'] = (int)$data['resolution'];
 }
@@ -37,7 +37,7 @@ if(isset($data['resolution']))
 if(isset($data['response_time']))
 {
       if(!is_numeric($data['response_time'])){
-          die_json_msg('parameter invalid', 10001);
+          die_json_msg('参数错误', 10100);
       }
           $data_judge_insert['response_time'] = (int)$data['response_time'];
 }
@@ -45,7 +45,7 @@ if(isset($data['response_time']))
 if(isset($data['attitude']))
 {
     if(!is_numeric($data['attitude'])){
-        die_json_msg('parameter invalid', 10001);
+        die_json_msg('参数错误', 10100);
     }
     $data_judge_insert['attitude'] = (int)$data['attitude'];
 }
@@ -55,17 +55,15 @@ if(isset($data['comment']))
     $data_comment_insert['driver_comment'] = $data['comment'];
     if(!model('mechanic_answer')->update($data['a_id'],$data_comment_insert))
     {
-        die_json_msg('数据更新失败', 10001);
+        die_json_msg('answer表更新失败', 10101);
     }
 
 }
 
 if(!model('mechanic_judgescore')->add($data_judge_insert))
 {
-    die_json_msg('数据更新失败', 10001);
+    die_json_msg('judgescore表增加失败', 10101);
 }
-
-
 
 $answer_item = model('mechanic_answer')->get_one($data['a_id']);
 $q_id = $answer_item['q_id'];
@@ -76,7 +74,7 @@ $questin_mechanic_item = $db->query($question_mechanic_sql);
 
 if(!$questin_mechanic_item)
 {
-    die_json_msg('状态更新失败', 10001);
+    die_json_msg('question_mechanic表更新失败', 10101);
 }
 
 if ($data_judge_insert['attitude'] + 
@@ -91,7 +89,7 @@ if ($data_judge_insert['attitude'] +
         ) ) ;
     if(!$res)
     {
-        die_json_msg('good插入失败', 10001);
+        die_json_msg('good表增加失败', 10101);
     }
 }
 
@@ -100,12 +98,12 @@ if ($data_judge_insert['attitude'] +
 $res1 = model('mechanic_question')->update($q_id,array('is_soluted'=>1)) ;
 if(!$res)
 {
-    die_json_msg('question更新失败', 10001);
+    die_json_msg('question表更新失败', 10101);
 }
 $q_data = model('mechanic_question')->get_one(array('q_id'=>$q_id)) ;
 if(!$res)
 {
-    die_json_msg('获取question信息失败', 10001);
+    die_json_msg('获取question信息失败', 20800);
 }
 $res2 = model('mechanic_answer')->update($data['a_id'],array('pay_amount'=>$q_data['reward'])) ;
 $res3 = model('mechanic_reward')->add(array(
@@ -116,7 +114,7 @@ $res3 = model('mechanic_reward')->add(array(
         )) ;
 if(!$res2 || !$res3)
 {
-    die_json_msg('更新数据失败', 10001);
+    die_json_msg('answer表或reward表更新失败', 20801);
 }
 
 json_send();

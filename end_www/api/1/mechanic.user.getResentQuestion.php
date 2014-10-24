@@ -10,15 +10,13 @@ $data = $_POST;
 
 if (!isset($data['access_token']) || !isset($data['from']) || !is_numeric($data['from']) )
 {
-	die_json_msg('parameter invalid', 10001);
+	die_json_msg('参数错误', 10100);
 }
-
 $item = model('mechanic_token')->get_one(array('token_type'=>'user',
                                             'access_token'=>$data['access_token'],
                                             'status'=>'valid'));
-
 if (!$item)
-    die_json_msg('token invalid',10000);
+    die_json_msg('access_token不可用',10600);
 
 $driver_user_id = $item['owner_id'] ;
 $count = 0 ;
@@ -27,7 +25,7 @@ $from = $data['from'] ;
 $data = array() ;
 $q_data = $db->get_all("SELECT * FROM end_mechanic_question WHERE driver_user_id = $driver_user_id ORDER BY create_time DESC LIMIT $from,10 ") ;
 if (!$q_data)
-    	die_json_msg('没有更多问题',10003) ;
+    	die_json_msg('没有更多问题',20900) ;
 
 foreach ($q_data as $key => $value) 
 {

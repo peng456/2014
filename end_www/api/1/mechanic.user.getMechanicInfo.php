@@ -10,7 +10,7 @@ $data = $_POST;
 
 if (!isset($data['access_token']) ||!isset($data['mechanic_id']) || !is_numeric($data['mechanic_id']))
 {
-	die_json_msg('parameter invalid', 10001);
+	die_json_msg('参数错误', 10100);
 }
 
 $item = model('mechanic_token')->get_one(array('token_type'=>'user',
@@ -18,7 +18,7 @@ $item = model('mechanic_token')->get_one(array('token_type'=>'user',
                                             'status'=>'valid'));
 
 if (!$item)
-    die_json_msg('token invalid',10000);
+    die_json_msg('access_token不可用',10600);
 
 $month_ago_time = time() - 30*24*3600 ;
 
@@ -27,7 +27,7 @@ $joininfo = model('mechanic_joininfo')->get_one(array('joininfo_id' => $userdata
 $answer_times = get_query_item_count("SELECT COUNT(*) FROM end_mechanic_answer WHERE mechanic_user_id = $userdata[user_id] AND create_time > $month_ago_time ") ;
 
 if (!$joininfo || !$userdata || $answer_times === NULL )
-    die_json_msg('获取用户信息失败',10003);
+    die_json_msg('user表或joininfo表无技师数据',20100);
 
 $workbrand = model('mechanic_car_brand')->get_one(array('car_brand_id'=>$joininfo['workbrand'])) ;
 $favorite_times = get_query_item_count("SELECT COUNT(*) FROM end_mechanic_favorite WHERE mechanic_user_id = $userdata[user_id]") ;
@@ -43,7 +43,7 @@ while($workcity['pid'] != 0)
  $workplacename = model('mechanic_garage')->get_one($joininfo['workplace']);
 
 if (!$workcity || !$workbrand || !$workplacename )
-    die_json_msg('获取技师详细信息失败',10003);
+    die_json_msg('city表、brand表、garage表信息获取失败',20400);
 
 $data = array(
 		'id'=>(int)$userdata['user_id'] ,
@@ -72,6 +72,6 @@ $res = model('mechanic_view')->add(array(
 	'create_time'=>time() ,
 	)) ;
 if (!$res)
-    die_json_msg('更新view表出错',1000);
+    die_json_msg('view表更新失败',1000);
 
 json_send($data) ;

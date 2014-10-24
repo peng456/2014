@@ -10,7 +10,7 @@ $data = $_POST;
 
 if (!isset($data['phone']) || !isset($data['password']))
 {
-	die_json_msg('parameter invalid', 10001);
+	die_json_msg('参数错误', 10100);
 }
 
 if(!preg_match("/1[34578]{1}\d{9}$/",$data['phone']))
@@ -23,14 +23,14 @@ $password = $data['password'];
 $item = model('mechanic_user')->get_one(array('username'=>$username, 'password'=>$password));
 if (!$item)
 {
-	die_json_msg('parameter value error: username password miss match', 10002);
+	die_json_msg('用户名或密码错误', 10400);
 }
 
 # generate pub_id for obd
 $db->query("update end_mechanic_token set status='invalid' where token_type='user' and owner_id=$item[user_id] and status='valid'");
 while (1)
 {
-	$new_token = hash_random($sn, 'sha256');
+	$new_token = hash_random($username, 'sha256');
 	$token = model('mechanic_token')->get_one(array('token_type'=>'user', 
 												 'owner_id'=>$item['user_id'], 
 												 'status'=>'valid',
@@ -42,7 +42,7 @@ while (1)
 											 'owner_id'=>$item['user_id'],
 											 'status'=>'valid')))
 		{
-			die_json_msg('database error:add token error', 10003);
+			die_json_msg('token表更新失败', 10101);
 		}
 
 		json_send(array('access_token'=>$new_token,

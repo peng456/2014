@@ -10,14 +10,14 @@ $data = $_POST;
 
 if (!isset($data['phone']) ||!isset($data['role']) || !isset($data['password']) || !isset($data['check_code']))
 {
-	die_json_msg('parameter invalid', 10001);
+	die_json_msg('参数错误', 10100);
 }
 if(!preg_match("/1[34578]{1}\d{9}$/",$data['phone']))
 {
     die_json_msg('参数错误', 10100);
 }
 if (!in_array($data['role'],array('driver','mechanic'))){
-    die_json_msg('parameter invalid', 10001);
+    die_json_msg('参数错误', 10100);
 }
 
 $username = $data['phone'] ;
@@ -34,7 +34,7 @@ $user_insert_data['password'] = $data['password'];
 $user_data = model('mechanic_user')->get_one(array('phone'=>$data['phone'])) ;
 if ($user_data)
 {
-	die_json_msg('phone is used',20200) ;
+	die_json_msg('手机号已被注册',10200) ;
 }
 
 //此处验证  验证码
@@ -46,11 +46,11 @@ $checkcode_data = $db->get_all($str_sql) ;
 if (!$checkcode_data)
 {
 
-	die_json_msg('checkcode time out', 20202) ;
+	die_json_msg('验证码过期',10201) ;
 }
 else if (!($checkcode_data[0]['checkcode'] == $data['check_code']))
 {
-	die_json_msg('checkcode error', 20203) ;
+	die_json_msg('验证码错误', 10202) ;
 }
 
 
@@ -73,14 +73,14 @@ if (isset($data['firstname'])){
 
 if (isset($data['role'])){
     if(!in_array($data['role'],array('driver','mechanic'))){
-        die_json_msg('参数错误', 10001);
+        die_json_msg('参数错误', 10100);
     }
     $user_insert_data['role'] = $data['role'];
 }
 
 if (isset($data['sex'])){
     if (!in_array($data['sex'],array('m','fm'))){
-        die_json_msg('parameter invalid', 10001);
+        die_json_msg('参数错误', 10100);
     }
 
     $user_insert_data['sex'] = $data['sex'];
@@ -89,7 +89,7 @@ if (isset($data['sex'])){
 if (isset($data['years'])){
       if(!is_numeric($data['years']))
       {
-          die_json_msg('parameter invalid', 10001);
+          die_json_msg('参数错误', 10100);
       }
     $user_insert_data['years'] = (int)$data['years'];
 }
@@ -109,7 +109,7 @@ if ($data['role'] == "mechanic"){             //技工用户
     {
         if(!is_numeric($data['work_year']))
         {
-            die_json_msg('parameter invalid', 10001);
+            die_json_msg('参数错误', 10100);
         }
         $joininfo_update_data['work_year'] = $data['work_year'];
     }
@@ -159,14 +159,14 @@ if ($data['role'] == "mechanic"){             //技工用户
     $item_mechanic_user = model('mechanic_user')->add($user_insert_data);
     if (!$item_mechanic_user)
     {
-        die_json_msg('database error: add user error', 10003);
+        die_json_msg('user表增加失败', 10101);
     }
 
     //添加 技工的信息
     $item_mechanic_joininfo = model('mechanic_joininfo')->update($joininfo_id,$joininfo_update_data);
     if (!$item_mechanic_joininfo)
     {
-        die_json_msg('database error: add user error', 10003);
+        die_json_msg('joininfo表更新失败', 10101);
     }
 
     //返回 token
@@ -174,7 +174,7 @@ if ($data['role'] == "mechanic"){             //技工用户
     //checkcode 失效
     if (!model('mechanic_user_checkcode')->update($checkcode_data[0]['checkcode_id'],array('status'=>'invalid')) )
     {
-        die_json_msg('database error: update checkcode log error',10003) ;
+        die_json_msg('user_checkcode表更新失败',10101) ;
     }
 
     while (1)
@@ -191,7 +191,7 @@ if ($data['role'] == "mechanic"){             //技工用户
                 'owner_id'=>$item_mechanic_user,
                 'status'=>'valid')))
             {
-                die_json_msg('database error: add token error', 10003);
+                die_json_msg('token表增加失败', 10101);
             }
             json_send(array('access_token'=>$new_token,
                 'expires_in'=>0));
@@ -215,12 +215,12 @@ if ($data['role'] == "mechanic"){             //技工用户
 
     if (!model('mechanic_user_checkcode')->update($checkcode_data[0]['checkcode_id'],array('status'=>'invalid')) )
     {
-        die_json_msg('database error: update checkcode log error',10003) ;
+        die_json_msg('user_checkcode表更新失败',10101) ;
     }
 
     while (1)
     {
-        $new_token = hash_random($sn, 'sha256');
+        $new_token = hash_random($data['phone'], 'sha256');
         $token = model('mechanic_token')->get_one(array('token_type'=>'user',
             'owner_id'=>$item_mechanic_user,
             'status'=>'valid',
@@ -232,7 +232,7 @@ if ($data['role'] == "mechanic"){             //技工用户
                 'owner_id'=>$item_mechanic_user,
                 'status'=>'valid')))
             {
-                die_json_msg('database error: add token error', 10003);
+                die_json_msg('token表增加失败', 10101);
             }
             json_send(array('access_token'=>$new_token,
                 'expires_in'=>0));
