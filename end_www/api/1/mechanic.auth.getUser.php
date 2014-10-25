@@ -111,7 +111,7 @@ if ($data['role'] == "mechanic"){             //技工用户
         {
             die_json_msg('参数错误', 10100);
         }
-        $joininfo_update_data['work_year'] = $data['work_year'];
+        $joininfo_update_data['work_year'] = time()-3600*24*365*$data['work_year'];
     }
 
     if(isset( $data['workbrand']))

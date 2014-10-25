@@ -40,9 +40,9 @@ while($workcity['pid'] != 0)
 	$workcity = model('mechanic_city')->get_one(array('city_id'=>$workcity['pid'])) ;
 	$workcityname = $workcity['city_name'].$workcityname ;
 }
- $workplacename = model('mechanic_garage')->get_one($joininfo['workplace']);
 
-if (!$workcity || !$workbrand || !$workplacename )
+
+if (!$workcity || !$workbrand )
     die_json_msg('city表、brand表、garage表信息获取失败',20400);
 
  $is_favorite = model('mechanic_favorite')->get_one(array('driver_user_id'=>$item['owner_id'],'mechanic_user_id'=>$data['mechanic_id'],'status'=>1));
@@ -55,10 +55,10 @@ if (!$workcity || !$workbrand || !$workplacename )
 		'stars'=>(int)$joininfo['stars'] ,
 		'response_time'=>(int)$joininfo['response_time'] ,
 		'reputation'=>(int)$joininfo['reputation'] ,
-		'work_year'=>(int)$joininfo['work_year'] ,
+		'work_year'=>round((time()-$joininfo['work_year'])/31536000,1) ,
 		'workbrand'=>(string)$workbrand['brand_name'] ,
 		'workcity'=>(string)$workcityname ,
-		'workplace'=>(string)$workplacename['garage_name'] ,
+		'workplace'=>(string)$joininfo['workplace'] ,
 		'technical_title'=>(string)$joininfo['technical_title'] ,
 		'birth_year'=>(int)$joininfo['birth_year'] ,
 		'education'=>(string)$joininfo['education'] ,

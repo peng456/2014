@@ -22,10 +22,12 @@ if (!$token)
     die_json_msg('access_token不可用', 10600);
 }
 
+
 $answer_item = model('mechanic_answer')->get_one($data['a_id']);
 $user_item = model('mechanic_user')->get_one($answer_item['mechanic_user_id']);
 $joininfo_item = model('mechanic_joininfo')->get_one($user_item['joininfo_id']);
 $answer_times  = model('mechanic_answer')->get_list(array('mechanic_user_id'=>$answer_item['mechanic_user_id']));
+$judgescore_item = model('mechanic_judgescore')->get_one(array('a_id'=>$data['a_id']));
 $data_send = array();
 
 $data_send['id'] = (int)$user_item['user_id'];
@@ -42,6 +44,12 @@ $data_send['pic_data'] = $pic;
 $voice = json_decode($answer_item['voice']);
 $data_send['voice_count'] = count($voice);
 $data_send['voice_data'] = $voice;
+$data_send['driver_comment'] = (string)$answer_item['driver_comment'];
+$data_send['resolution'] = (int)$answer_item['resolution'];
+$data_send['answer_response_time'] = (int)$answer_item['response_time'];
+$data_send['attitude'] = (int)$answer_item['attitude'];
+
+
 
 $comment_items = model('mechanic_comment')->get_list(array('a_id'=>$data['a_id']));
 $comment_items_count = count($comment_items);

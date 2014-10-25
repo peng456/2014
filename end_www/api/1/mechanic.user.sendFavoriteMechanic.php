@@ -31,9 +31,7 @@ if($data['type'] == 1){   //收藏技师
         if(!$favorite_item_update){
             die_json_msg('favorite表更新失败',10101);
         }
-
-        $item = array('favorite_id'=>(int)$favorite_item['favorite_id']);
-        json_send($item);
+        json_send();
     }
     $insert = model('mechanic_favorite')->add(array('driver_user_id'=>$driver_user_id,
         'mechanic_user_id'=>$data['mechanic_id'],
@@ -49,7 +47,7 @@ if($data['type'] == 1){   //收藏技师
 elseif($data['type'] == 0){  //取消收藏
     if($favorite_item){ // 已经 follow了这家商店，则返回这家商店的favorit_id
 
-        $favorite_item_update = model('user_favorite')->update((int)$favorite_item['favorite_id'],array(
+        $favorite_item_update = model('mechanic_favorite')->update((int)$favorite_item['favorite_id'],array(
             'status'=>'0'));
 
         if(!$favorite_item_update){
@@ -57,7 +55,6 @@ elseif($data['type'] == 0){  //取消收藏
         }
         json_send();
     }
-
 
     die_json_msg('该用户还没有收藏此技师',20500);
 

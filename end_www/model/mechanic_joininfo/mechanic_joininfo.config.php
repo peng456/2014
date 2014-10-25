@@ -41,7 +41,7 @@ $end_models['mechanic_joininfo'] = array(
 			'null'=>true
 		),
 		'work_year'=>array(
-			'name'=>'工作时间',
+			'name'=>'工作开始时间',
 			'type'=>'text',
 			'null'=>false
 		),
@@ -85,7 +85,7 @@ $end_models['mechanic_joininfo'] = array(
 			'null'=>true
 		),
 		'work_year'=>array(
-			'name'=>'工作时间',
+			'name'=>'工作开始时间',
 			'type'=>'text',
 			'null'=>false
 		),
