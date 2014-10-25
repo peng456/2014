@@ -74,10 +74,10 @@ $end_models['mechanic_question'] = array(
             'null' => true
         ),
        'create_time' => array(
-          'name' => '',
+          'name' => '创建时间',
            'type' => 'text',
            'null' => true,
-           'filter'=>'show_mechanic_question_date'
+          'filter'=>'show_mechanic_question_date'
         )
     ),
     //显示在列表中的内容

@@ -45,7 +45,9 @@ while($workcity['pid'] != 0)
 if (!$workcity || !$workbrand || !$workplacename )
     die_json_msg('city表、brand表、garage表信息获取失败',20400);
 
-$data = array(
+ $is_favorite = model('mechanic_favorite')->get_one(array('driver_user_id'=>$item['owner_id'],'mechanic_user_id'=>$data['mechanic_id'],'status'=>1));
+
+ $data = array(
 		'id'=>(int)$userdata['user_id'] ,
 		'name'=>(string)$joininfo['name'] ,
 		'avatar'=>(string)$userdata['avatar'] ,
@@ -63,6 +65,7 @@ $data = array(
 		'award'=>(string)$joininfo['award'] ,
 		'resume'=>(string)$joininfo['resume'] ,
 		'favorite_times'=>(int)$favorite_times ,
+		'is_favorite'=>(int)$is_favorite ,
 		) ;
 
 $res = model('mechanic_view')->add(array(
