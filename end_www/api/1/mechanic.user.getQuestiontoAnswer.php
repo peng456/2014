@@ -32,6 +32,7 @@ $question_data = array(
 	'pic_data'=>$pictures ,
 	'voice_count'=>(int)count($voices) ,
 	'voice_data'=>$voices ,
+	'create_time'=>(int)$q_data['create_time']
 	) ;
 
 $mechanic_data = array() ;
@@ -44,12 +45,15 @@ foreach ($m_data as $key => $value)
 	
 	if (!$item || !$userdata)
     die_json_msg('user表或joininfo表无技师数据',20100);
+    //
+    $answer_item = model('mechanic_answer')->get_one(array('q_id'=>(int)$data['q_id']));
 
 	$mechanic_data[] = array(
 		'id'=>(int)$userdata['user_id'] ,
 		'name'=>(string)$joininfo['name'] ,
 		'avatar'=>(string)$userdata['avatar'] ,
 		'status'=>(int)$value['status'] ,
+        'a_id'=>(int)$answer_item['q_id']
 		) ;
 	$mechanic_count++ ;
 }
