@@ -23,5 +23,10 @@ if (!$item)
 $q_data = model('mechanic_question')->get_one(array('q_id'=>$data['q_id']) ) ;
 if (!$q_data )
     die_json_msg('问题id无效',20600);
-
-json_send(array('view_count'=>(int)$q_data['view_count']) ) ;
+$status = 0;
+$q_data = model('mechanic_accept')->get_one(array('q_id'=>$data['q_id'],'is_push'=>0) ) ;
+if($q_data)
+{
+    $status = 1;
+}
+json_send(array('view_count'=>(int)$q_data['view_count'],'status'=>$status) ) ;
