@@ -18,6 +18,12 @@ $end_models['mechanic_user'] = array(
 		)
 	),
 	'fields' => array(
+        'user_id'=>array(
+            'name'=>'ID',
+            'type'=>'text',
+            'null'=>false,
+            'readonly'=>true
+        ),
 		'username'=>array(
 			'name'=>'用户名',
 			'type'=>'text',
@@ -32,11 +38,26 @@ $end_models['mechanic_user'] = array(
 			'prefilter'=>'end_mechanic_user_show_empty_password',
 			'description'=>'如不需要修改密码，请留空'
 		),
-		'name'=>array(
-			'name'=>'姓名',
+		'role'=>array(
+			'name'=>'角色',
 			'type'=>'text',
 			'null'=>false
 		),
+        'nickname'=>array(
+            'name'=>'昵称',
+            'type'=>'text',
+            'null'=>false
+        ),
+        'firstname'=>array(
+            'name'=>'姓',
+            'type'=>'text',
+            'null'=>false
+        ),
+        'lastname'=>array(
+            'name'=>'名',
+            'type'=>'text',
+            'null'=>false
+        ),
 		'phone'=>array(
 			'name'=>'电话',
 			'type'=>'text',
@@ -52,6 +73,26 @@ $end_models['mechanic_user'] = array(
 			'type'=>'image',
 			'null'=>true
 		),
+        'sex'=>array(
+            'name'=>'性别',
+            'type'=>'text',
+            'null'=>true
+        ),
+        'years'=>array(
+            'name'=>'年龄',
+            'type'=>'text',
+            'null'=>true
+        ),
+        'car'=>array(
+            'name'=>'车',
+            'type'=>'text',
+            'null'=>true
+        ),
+        'joininfo_id'=>array(
+            'name'=>'加盟码ID',
+            'type'=>'text',
+            'null'=>true
+        ),
 		'create_time' => array(
 		 	'name' => '注册时间',
 		 	'type' => 'datetime',
@@ -77,26 +118,41 @@ $end_models['mechanic_user'] = array(
 			'type'=>'text',
 			'search'=>true
 		),
-		'name'=>array(
-			'name'=>'姓名',
+        'nickname'=>array(
+			'name'=>'用户名',
 			'width'=>'auto',
 			'sort'=>true,
 			'type'=>'text',
 			'search'=>true
 		),
-		'email'=>array(
+	   'email'=>array(
 			'name'=>'Email',
 			'width'=>'auto',
 			'sort'=>true,
 			'type'=>'text',
 			'search'=>true
 		),
+        'avatar'=>array(
+            'name'=>'头像',
+            'type'=>'image',
+            'null'=>true
+        ),
+        'sex'=>array(
+            'name'=>'性别',
+            'type'=>'text',
+            'null'=>true
+        ),
 		'create_time'=>array(
 			'name'=>'注册时间',
 			'width'=>110,
 			'sort'=>true,
 			'filter'=>'show_mechanic_user_date'
 		),
+        'joininfo_id'=>array(
+            'name'=>'加盟码ID',
+            'type'=>'text',
+            'null'=>true
+        ),
 		'sex'=>array(
 			'name'=>'性别',
 			'width'=>'auto',
