@@ -28,7 +28,7 @@ $accept_data = model('mechanic_accept')->get_list(array('q_id'=>$data['q_id']) )
 if ($accept_data === NULL)
     die_json_msg('数据库错误',10101);
 
-if(count($accept_data)>=3)
+if(count($accept_data)>=1)
 {
 	$status = 1 ;
 }
