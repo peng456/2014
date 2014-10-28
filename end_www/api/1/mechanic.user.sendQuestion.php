@@ -8,7 +8,7 @@
  
 $data = $_POST;
 
-if (!isset($data['access_token']) || !isset($data['type'])|| !isset($data['q_type']) || !isset($data['msg']))
+if (!isset($data['access_token']) || !isset($data['type'])|| !isset($data['q_type_firstclass'])|| !isset($data['q_type_secondclass']) || !isset($data['brand']) || !isset($data['model']) || !isset($data['series']) || !isset($data['year']) || !isset($data['msg']))
 {
     die_json_msg('参数错误', 10100);
 }
@@ -64,6 +64,13 @@ $data_insert_question ['view_count'] = 0 ;
 $data_insert_question ['is_soluted'] = 0;
 $data_insert_question ['is_accept'] =  0;
 $data_insert_question ['create_time'] =  time();
+$data_insert_question ['q_type_firstclass'] =  $data['q_type_firstclass'] ;
+$data_insert_question ['q_type_secondclass'] =  $data['q_type_secondclass'] ;
+$data_insert_question ['brand'] =  $data['brand'] ;
+$data_insert_question ['series'] =  $data['series'] ;
+$data_insert_question ['model'] =  $data['model'] ;
+$data_insert_question ['year'] =  $data['year'] ;
+
 
 if ($data['type'] == 0)
 {

@@ -23,6 +23,7 @@ if (!$item)
 $q_data = model('mechanic_question')->get_one(array('q_id'=>$data['q_id']) ) ;
 if (!$q_data )
     die_json_msg('问题id无效',20600);
+
 $status = 0;
 $accept = model('mechanic_accept')->get_one(array('q_id'=>$data['q_id'],'is_push'=>0) ) ;
 if($accept)

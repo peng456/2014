@@ -53,7 +53,7 @@ foreach ($m_data as $key => $value)
 		'name'=>(string)$joininfo['name'] ,
 		'avatar'=>(string)$userdata['avatar'] ,
 		'status'=>(int)$value['status'] ,
-        'a_id'=>(int)$answer_item['q_id']
+        'a_id'=>(int)$answer_item['a_id']
 		) ;
 	$mechanic_count++ ;
 }
