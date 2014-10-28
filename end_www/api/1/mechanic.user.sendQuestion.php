@@ -23,6 +23,7 @@ if (!$token)
     die_json_msg('access_token不可用', 10600);
 }
 
+
 $data_receive = json_decode($data['msg'],true);
 $data_insert_question = array();
 if($data_receive['text'])
@@ -40,13 +41,28 @@ if($data_receive['voice_data'])
 	$data_insert_question ['voice'] =  json_encode($data_receive['voice_data']);
 };
 
+//关于此问题有关车的类型
+if(isset($data['brand'])){
+    $data_insert_question['brand'] = (int)$data['brand'];
+}
+if(isset($data['model'])){
+    $data_insert_question['model'] = (int)$data['model'];
+}
+if(isset($data['series'])){
+    $data_insert_question['series'] = (int)$data['series'];
+}
+if(isset($data['year'])){
+    $data_insert_question['year'] = (int)$data['year'];
+}
 
 $data_insert_question ['type'] = $data['type'];
+$data_insert_question ['q_type'] = $data['q_type'];
+$data_insert_question ['q_brand'] = (int)$data['q_brand'];
 $data_insert_question ['driver_user_id'] = (int)$token['owner_id'];
 $data_insert_question ['reward'] = $data['reward'] ;
 $data_insert_question ['view_count'] = 0 ;
 $data_insert_question ['is_soluted'] = 0;
-$data_insert_question ['is_accept'] =    0;
+$data_insert_question ['is_accept'] =  0;
 $data_insert_question ['create_time'] =  time();
 
 if ($data['type'] == 0)
