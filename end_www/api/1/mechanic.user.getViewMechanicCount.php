@@ -31,3 +31,4 @@ if($accept)
     $status = 1;
 }
 json_send(array('view_count'=>(int)$q_data['view_count'],'status'=>$status) ) ;
+
