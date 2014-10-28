@@ -24,4 +24,17 @@ $q_data = model('mechanic_question')->get_one(array('q_id'=>$data['q_id']) ) ;
 if (!$q_data )
     die_json_msg('问题id无效',20600);
 
-json_send(array('view_count'=>(int)$q_data['view_count']) ) ;
+$accept_data = model('mechanic_accept')->get_list(array('q_id'=>$data['q_id']) ) ;
+if ($accept_data === NULL)
+    die_json_msg('数据库错误',10101);
+
+if(count($accept_data)>=3)
+{
+	$status = 1 ;
+}
+else
+{
+	$status = 0 ;
+}
+
+json_send(array('view_count'=>(int)$q_data['view_count'],'status'=>(int)$status) ) ;
