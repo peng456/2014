@@ -3,7 +3,7 @@
  * 获取答案信息
  * API 2.7
  *
- * @author liudanking	2013.08.09
+ * @author zhanglipeng	2014.10.23
  */
  
 $data = $_POST;
@@ -45,11 +45,9 @@ $voice = json_decode($answer_item['voice']);
 $data_send['voice_count'] = count($voice);
 $data_send['voice_data'] = $voice;
 $data_send['driver_comment'] = (string)$answer_item['driver_comment'];
-$data_send['resolution'] = (int)$answer_item['resolution'];
-$data_send['answer_response_time'] = (int)$answer_item['response_time'];
-$data_send['attitude'] = (int)$answer_item['attitude'];
-
-
+$data_send['resolution'] = (int)$judgescore_item['resolution'];
+$data_send['answer_response_time'] = (int)$judgescore_item['response_time'];
+$data_send['attitude'] = (int)$judgescore_item['attitude'];
 
 $comment_items = model('mechanic_comment')->get_list(array('a_id'=>$data['a_id']));
 $comment_items_count = count($comment_items);

@@ -59,7 +59,7 @@ if ($data['q_id'] == 0)
 		'voice_data'=>$voices ,
 	) ;
 
-	$select_qdata = model('mechanic_question')->get_one(array('q_id'=>$q_data[$seletc_qid]['q_id'])) ;
+
 	$res = model('mechanic_question')->update($select_qdata['q_id'],array('view_count'=>((int)$select_qdata['view_count']+1)) ) ;
 	if (!$select_qdata || !$res)
     	die_json_msg('question表查询或更新失败',10101);
@@ -71,24 +71,6 @@ if ($data['q_id'] == 0)
 		if (!$res)
 	    	die_json_msg('question表更新q_status失败',10101);
 	}
-
-    //快速提问用 未测试
-    if ($select_qdata['type'] == 0 && $select_qdata['view_count'] == 9)
-    {
-    	//此处修改选择代码
-    	$mechanic_data = $db->get_list("SELECT * FROM end_mechanic_accept WHERE q_id = $select_qdata[q_id] ORDER BY create_time LIMIT 0,1 ") ;
-    	$res = model('mechanic_question')->update($select_qdata['q_id'],array('is_accept'=>1)) ;
-    	if (!$mechanic_data || !$res)
-    		die_json_msg('accept表查询或question更新失败',10101);
-
-    	foreach ($mechanic_data as $key => $value) 
-    	{
-    		$res = model('mechanic_question_mechanic')->add(array('q_id'=>$value['q_id'],'mechanic_user_id'=>$value['mechanic_user_id'],'status'=>0)) ;
-    		if (!$res)
-    			die_json_msg('question_mechanic表增加失败',10003);
-    	}
-    }
-
 	json_send($res_data) ;
 }
 else
