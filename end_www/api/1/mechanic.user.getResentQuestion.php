@@ -40,6 +40,7 @@ foreach ($q_data as $key => $value)
 		'pic_data'=>$pictures ,
 		'voice_count'=>(int)count($voices) ,
 		'voice_data'=>$voices ,
+        'q_status'=>(int)$value['q_status']
 	) ;
 
 	$a_data = model('mechanic_answer')->get_list(array('q_id'=>$value['q_id'])) ;
