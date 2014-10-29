@@ -20,10 +20,10 @@ if (!$item)
 
 $driver_user_id = $item['owner_id'] ;
 $count = 0 ;
-$from = $data['from'] ;
+$from_start = $data['from'] ;
 
 $data = array() ;
-$q_data = $db->get_all("SELECT * FROM end_mechanic_question WHERE driver_user_id = $driver_user_id ORDER BY create_time DESC LIMIT $from,10 ") ;
+$q_data = $db->get_all("SELECT * FROM end_mechanic_question WHERE driver_user_id = $driver_user_id ORDER BY create_time DESC LIMIT $from_start,10 ") ;
 if (!$q_data)
     	die_json_msg('没有更多问题',20900) ;
 

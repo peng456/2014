@@ -49,19 +49,23 @@ switch($data['type']){
 
             $judgescore_avg = ((float)$driver_judgescore['resolution']+(float)$driver_judgescore['response_time']+(float)$driver_judgescore['attitude'])/3;
 
+            $q_type_firstclass  = model('mechanic_question_type')->get_one($questiondata['q_type_firstclass']);
+            $q_type_secondclass = model('mechanic_question_type')->get_one($questiondata['q_type_secondclass']);
            $answer_question_data_item[] = array(
                'question_data'=>array(
                 'driver_user_id'=>(int)$driver_user['user_id'] ,
                 'driver_name'=>(string)$driver_user['nickname'] ,
                 'driver_avatar'=>(string)$driver_user['avatar'] ,
                 'q_id'=>(int)$questiondata['q_id'] ,
-                'q_type'=>(int)$questiondata['q_type'] ,
+                'q_type_firstclass'=>(string)$q_type_firstclass['content'],
+                'q_type_secondclass'=>(string)$q_type_secondclass['content'],
                 'time'=>(int)$questiondata['create_time'] ,
                 'text'=>(string)$questiondata['text'] ,
                 'pic_count'=>(int)count($question_pictures) ,
                 'pic_data'=>$question_pictures?$question_pictures:"" ,
-                'voice_count'=>(int)count($question_voices) ,
-                'voice_data'=>$question_voices?$question_voices:""
+                'voice_count'=>(int)count($question_voices),
+                'voice_data'=>$question_voices?$question_voices:"",
+                'q_status'=>(int)$questiondata['q_status']
                ),
                'answer_count'=>1,
                'answer_data'=>array(
@@ -74,8 +78,8 @@ switch($data['type']){
                'time'=>(int)$answerdata['create_time'] ,
                'text'=>(string)$answerdata['text'] ,
                'pic_count'=>(int)count($answer_pictures) ,
-               'pic_data'=>$answer_pictures?$answer_pictures:"" ,
-               'voice_count'=>(int)count($answer_voices) ,
+               'pic_data'=>$answer_pictures?$answer_pictures:"",
+               'voice_count'=>(int)count($answer_voices),
                'voice_data'=>$answer_voices?$answer_voices:""
                )
             );
@@ -108,13 +112,16 @@ switch($data['type']){
             $driver_judgescore = model('mechanic_judgescore')->get_one(array('a_id'=>$answerdata['a_id']));
             $judgescore_avg = ((float)$driver_judgescore['resolution']+(float)$driver_judgescore['response_time']+(float)$driver_judgescore['attitude'])/3;
 
+            $q_type_firstclass  = model('mechanic_question_type')->get_one($questiondata['q_type_firstclass']);
+            $q_type_secondclass = model('mechanic_question_type')->get_one($questiondata['q_type_secondclass']);
             $answer_question_data_item[] = array(
                 'question_data'=>array(
                     'driver_user_id'=>(int)$driver_user['user_id'] ,
                     'driver_name'=>(string)$driver_user['nickname'] ,
                     'driver_avatar'=>(string)$driver_user['avatar'] ,
                     'q_id'=>(int)$questiondata['q_id'] ,
-                    'q_type'=>(int)$questiondata['q_type'] ,
+                    'q_type_firstclass'=>(string)$q_type_firstclass['content'],
+                    'q_type_secondclass'=>(string)$q_type_secondclass['content'],
                     'time'=>(int)$questiondata['create_time'] ,
                     'text'=>(string)$questiondata['text'] ,
                     'pic_count'=>(int)count($question_pictures) ,
@@ -152,7 +159,7 @@ switch($data['type']){
             die_json_msg('car_brand表查询失败', 10101);
         }
         $query_sql_car = "select question.*,answer.a_id,answer.mechanic_user_id ,answer.text as text1,answer.picture as picture1,answer.voice as voice1,answer.create_time as create_time1,answer.pay_amount
-        from end_mechanic_question  as question INNER JOIN end_mechanic_answer as answer USING(q_id) where question.q_brand = {$data['brand']}  ORDER BY answer.create_time DESC LIMIT {$data['from']},10";
+        from end_mechanic_question  as question INNER JOIN end_mechanic_answer as answer USING(q_id) where question.brand = {$data['brand']}  ORDER BY answer.create_time DESC LIMIT {$data['from']},10";
 
         $question_answer_items = model('mechanic_question')->get_list(array('_custom_sql'=>$query_sql_car));
         if($question_answer_items === null)
@@ -181,13 +188,16 @@ switch($data['type']){
 
             $judgescore_avg = ((float)$driver_judgescore['resolution']+(float)$driver_judgescore['response_time']+(float)$driver_judgescore['attitude'])/3;
 
+            $q_type_firstclass  = model('mechanic_question_type')->get_one($answer_question_data_item['q_type_firstclass']);
+            $q_type_secondclass = model('mechanic_question_type')->get_one($answer_question_data_item['q_type_secondclass']);
             $answer_question_data[] = array(
                 'question_data'=>array(
                     'driver_user_id'=>(int)$driver_user['user_id'] ,
                     'driver_name'=>(string)$driver_user['nickname'] ,
                     'driver_avatar'=>(string)$driver_user['avatar'] ,
                     'q_id'=>(int)$answer_question_data_item['q_id'] ,
-                    'q_type'=>(int)$answer_question_data_item['q_type'] ,
+                    'q_type_firstclass'=>(string)$q_type_firstclass['content'],
+                    'q_type_secondclass'=>(string)$q_type_secondclass['content'],
                     'time'=>(int)$answer_question_data_item['create_time'] ,
                     'text'=>(string)$answer_question_data_item['text'] ,
                     'pic_count'=>(int)count($question_pictures) ,
