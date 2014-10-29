@@ -69,6 +69,19 @@ for($i = 0;$i<$comment_items_count;$i++)
 
 $data_send['comment'] = $comments;
 
+
+
+//更改question状态
+$q_data = model('mechanic_question')->get_one(array('q_id'=>$answer_item['q_id'])) ;
+
+if ($q_data['q_status'] == 4)
+{
+    $res = model('mechanic_question')->update($answer_item['q_id'],array('q_status'=>5 )) ;
+    if (!$res)
+        die_json_msg('question表更新q_status失败',10101);
+}
+
+
 json_send($data_send);
 
 

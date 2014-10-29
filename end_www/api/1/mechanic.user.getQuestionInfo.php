@@ -63,11 +63,20 @@ if ($data['q_id'] == 0)
 	$res = model('mechanic_question')->update($select_qdata['q_id'],array('view_count'=>((int)$select_qdata['view_count']+1)) ) ;
 	if (!$select_qdata || !$res)
     	die_json_msg('question表查询或更新失败',10101);
+    
+    unset($res) ;
+    if ($select_qdata['q_status'] == 0)
+    {
+    	$res = model('mechanic_question')->update($select_qdata['q_id'],array('q_status'=>1 )) ;
+		if (!$res)
+	    	die_json_msg('question表更新q_status失败',10101);
+	}
 
-    if ($select_qdata['type'] == 0 && $select_qdata['view_count'] == 19)
+    //快速提问用 未测试
+    if ($select_qdata['type'] == 0 && $select_qdata['view_count'] == 9)
     {
     	//此处修改选择代码
-    	$mechanic_data = $db->get_list("SELECT * FROM end_mechanic_accept WHERE q_id = $select_qdata[q_id] ORDER BY create_time LIMIT 0, $data[quickcount] ") ;
+    	$mechanic_data = $db->get_list("SELECT * FROM end_mechanic_accept WHERE q_id = $select_qdata[q_id] ORDER BY create_time LIMIT 0,1 ") ;
     	$res = model('mechanic_question')->update($select_qdata['q_id'],array('is_accept'=>1)) ;
     	if (!$mechanic_data || !$res)
     		die_json_msg('accept表查询或question更新失败',10101);

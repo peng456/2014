@@ -31,6 +31,15 @@ if (!$accept_item)
     die_json_msg('accept表增加失败', 10100);
 }
 
+$q_data = model('mechanic_question')->get_one(array('q_id'=>(int)$data['q_id'])) ;
+
+if ($q_data['q_status'] == 1)
+{
+	$res = model('mechanic_question')->update((int)$data['q_id'],array('q_status'=>2 )) ;
+	if (!$res)
+    	die_json_msg('question表更新q_status失败',10101);
+}
+
 json_send(
         array()
 );

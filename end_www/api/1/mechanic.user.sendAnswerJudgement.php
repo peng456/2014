@@ -117,6 +117,18 @@ if(!$res2 || !$res3)
     die_json_msg('answer表或reward表更新失败', 20801);
 }
 
+
+//question的q_status 更改
+$qq_data = model('mechanic_question')->get_one(array('q_id'=>$answer_item['q_id'])) ;
+
+if ($qq_data['q_status'] == 5)
+{
+    $res = model('mechanic_question')->update($answer_item['q_id'],array('q_status'=>6 )) ;
+    if (!$res)
+        die_json_msg('question表更新q_status失败',10101);
+}
+
+
 json_send();
 
 

@@ -66,6 +66,18 @@ if(!$questin_mechanic_item)
 {
     die_json_msg('question_mechanic表更新失败', 10101);
 }
+
+//更改question状态
+$q_data = model('mechanic_question')->get_one(array('q_id'=>$q_id)) ;
+
+if ($q_data['q_status'] == 3)
+{
+	$res = model('mechanic_question')->update($q_id,array('q_status'=>4 )) ;
+	if (!$res)
+    	die_json_msg('question表更新q_status失败',10101);
+}
+
+
 json_send(array(
 	'a_id'=>$answer_item
 	)) ;
