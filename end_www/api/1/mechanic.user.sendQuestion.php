@@ -72,11 +72,6 @@ json_send(array(
 	'q_id'=>$question_item 
 	));
 
-
-
-
-	
-	
 	
 	
 	
