@@ -33,6 +33,9 @@ if (!$accept_item)
 
 $q_data = model('mechanic_question')->get_one(array('q_id'=>(int)$data['q_id'])) ;
 
+if (!$q_data)
+        die_json_msg('question表获取信息失败',10101);
+    
 if ($q_data['q_status'] == 1)
 {
 	$res = model('mechanic_question')->update((int)$data['q_id'],array('q_status'=>2 )) ;

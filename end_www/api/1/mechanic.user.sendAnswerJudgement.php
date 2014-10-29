@@ -120,7 +120,8 @@ if(!$res2 || !$res3)
 
 //question的q_status 更改
 $qq_data = model('mechanic_question')->get_one(array('q_id'=>$answer_item['q_id'])) ;
-
+if (!$qq_data)
+        die_json_msg('question表获取信息失败',10101);
 if ($qq_data['q_status'] == 5)
 {
     $res = model('mechanic_question')->update($answer_item['q_id'],array('q_status'=>6 )) ;

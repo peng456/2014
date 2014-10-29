@@ -74,6 +74,9 @@ $data_send['comment'] = $comments;
 //更改question状态
 $q_data = model('mechanic_question')->get_one(array('q_id'=>$answer_item['q_id'])) ;
 
+if (!$q_data)
+        die_json_msg('question表获取信息失败',10101);
+
 if ($q_data['q_status'] == 4)
 {
     $res = model('mechanic_question')->update($answer_item['q_id'],array('q_status'=>5 )) ;
