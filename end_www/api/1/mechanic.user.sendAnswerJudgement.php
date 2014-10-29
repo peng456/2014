@@ -95,22 +95,22 @@ if ($data_judge_insert['attitude'] +
 
 //因为需求改为只选一人，故赏金全给一人
 
-$res1 = model('mechanic_question')->update($q_id,array('is_soluted'=>1)) ;
-if(!$res)
+$res_question = model('mechanic_question')->update($q_id,array('is_soluted'=>1)) ;
+if(!$res_question)
 {
     die_json_msg('question表更新失败', 10101);
 }
 $q_data = model('mechanic_question')->get_one(array('q_id'=>$q_id)) ;
-if(!$res)
+if(!$q_data)
 {
     die_json_msg('获取question信息失败', 20800);
 }
-$res2 = model('mechanic_answer')->update($data['a_id'],array('pay_amount'=>$q_data['reward'])) ;
+$res2 = model('mechanic_answer')->update($data['a_id'],array('pay_amount'=>(int)$data['reward'])) ;
 $res3 = model('mechanic_reward')->add(array(
         'driver_user_id'=>$data_judge_insert['driver_user_id'] ,
         'mechanic_user_id'=>$user_id ,
         'is_push'=>0 ,
-        'reward'=>$q_data['reward'] ,
+        'reward'=>(int)$data['reward'] ,
         )) ;
 if(!$res2 || !$res3)
 {

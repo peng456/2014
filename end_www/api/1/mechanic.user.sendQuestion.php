@@ -42,22 +42,11 @@ if($data_receive['voice_data'])
 };
 
 //关于此问题有关车的类型
-if(isset($data['brand'])){
-    $data_insert_question['brand'] = (int)$data['brand'];
-}
-if(isset($data['model'])){
-    $data_insert_question['model'] = (int)$data['model'];
-}
-if(isset($data['series'])){
-    $data_insert_question['series'] = (int)$data['series'];
-}
-if(isset($data['year'])){
-    $data_insert_question['year'] = (int)$data['year'];
-}
-
+$data_insert_question['brand'] = (int)$data['brand'];
+$data_insert_question['model'] = (int)$data['model'];
+$data_insert_question['series'] = (int)$data['series'];
+$data_insert_question['year'] = (int)$data['year'];
 $data_insert_question ['type'] = $data['type'];
-$data_insert_question ['q_type'] = $data['q_type'];
-$data_insert_question ['q_brand'] = (int)$data['q_brand'];
 $data_insert_question ['driver_user_id'] = (int)$token['owner_id'];
 $data_insert_question ['reward'] = $data['reward'] ;
 $data_insert_question ['view_count'] = 0 ;
@@ -66,17 +55,11 @@ $data_insert_question ['is_accept'] =  0;
 $data_insert_question ['create_time'] =  time();
 $data_insert_question ['q_type_firstclass'] =  $data['q_type_firstclass'] ;
 $data_insert_question ['q_type_secondclass'] =  $data['q_type_secondclass'] ;
-$data_insert_question ['brand'] =  $data['brand'] ;
-$data_insert_question ['series'] =  $data['series'] ;
-$data_insert_question ['model'] =  $data['model'] ;
-$data_insert_question ['year'] =  $data['year'] ;
-
 
 if ($data['type'] == 0)
 {
 	$data_insert_question['quick_count'] = $data['quickcount'] ;
 }
-
 
 $question_item = model('mechanic_question')->add($data_insert_question);
 

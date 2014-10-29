@@ -91,7 +91,7 @@ if (isset($data['years'])){
       {
           die_json_msg('参数错误', 10100);
       }
-    $user_insert_data['years'] = (int)$data['years'];
+    $user_insert_data['years'] = time()-3600*24*365*$data['years'];
 }
 
 if (isset($data['car'])){
