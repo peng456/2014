@@ -4,7 +4,7 @@
  *
  * @author deanmongel
  */
-$end_models['mechanic_user_user_checkcode'] = array(
+$end_models['mechanic_user_checkcode'] = array(
 	'type' => 'list', //表示这是一个列表型的模型，对应一个数据库的表
 	'name' => '验证码数据',	//某型的名字，可以把一个栏目配置成某个模型
 	'list_items'=>30, //后台每页显示
@@ -24,15 +24,25 @@ $end_models['mechanic_user_user_checkcode'] = array(
 			'null' => true
 			),
 		'phone' => array(
-			'name' => '好友1',
+			'name' => '手机号',
 			'type' => 'text',
 			'null' => true
 		),
 		'checkcode' => array(
-			'name' => '好友2',
+			'name' => '验证码',
 			'type' => 'text',
 			'null' => true
-		)
+		),
+        'createtime' => array(
+            'name' => '创建时间',
+            'type' => 'text',
+            'null' => true
+        ),
+        'expires_in' => array(
+            'name' => '过期时间',
+            'type' => 'text',
+            'null' => true
+        )
 	),
 	//显示在列表中的内容
 	'list_fields' => array(

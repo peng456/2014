@@ -28,8 +28,8 @@ $end_models['mechanic_judgescore'] = array(
             'type' => 'text',
             'null' => true
         ),
-        'mechanic_user_id' => array(
-            'name' => '技师ID',
+        'driver_user_id' => array(
+            'name' => '用户ID',
             'type' => 'text',
             'null' => true
         ),
@@ -72,8 +72,8 @@ $end_models['mechanic_judgescore'] = array(
             'search'=>true,
             'search'=>true
         ),
-        'mechanic_user_id'=>array(
-            'name'=>'技师ID',
+        'driver_user_id'=>array(
+            'name'=>'用户ID',
             'width'=>'auto',
             'type'=>'text',
             'search'=>true

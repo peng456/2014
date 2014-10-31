@@ -39,7 +39,7 @@ foreach ($q_data as $key => $value)
     $q_type_secondclass = model('mechanic_question_type')->get_one($value['q_type_secondclass']);
 	$question_data = array(
         'driver_user_id'=>(int)$driver_user['user_id'] ,
-        'driver_name'=>(string)$driver_user['firstname'].$driver_user['lastname'] ,
+        'driver_name'=>(string)$driver_user['lastname'].$driver_user['firstname'],
         'avatar'=>(string)$driver_user['avatar'] ,
 		'q_id'=>(int)$value['q_id'] ,
         'q_type_firstclass'=>(string)$q_type_firstclass['content'],
@@ -55,8 +55,8 @@ foreach ($q_data as $key => $value)
 
 	$a_data = model('mechanic_answer')->get_list(array('q_id'=>$value['q_id'])) ;
 
-    $mechanic_count = 0 ;
-    $mechanic_data = array() ;
+    $answer_count = 0 ;
+    $answer_data = array() ;
     foreach ($a_data as $key2 => $value2) 
     {
         $answer_count++ ;
@@ -72,7 +72,7 @@ foreach ($q_data as $key => $value)
         $judgescore_avg = ((float)$driver_judgescore['resolution']+(float)$driver_judgescore['response_time']+(float)$driver_judgescore['attitude'])/3;
 
 
-        $answer_data = array(
+        $answer_data[] = array(
             'mechanic_user_id'=>(int)$userdata['user_id'] ,
             'mechanic_avatar'=>(string)$userdata['avatar'] ,
             'mechanic_name'=>(string)$joininfo['name'] ,
@@ -86,9 +86,7 @@ foreach ($q_data as $key => $value)
             'voice_data'=>$answer_voicesvoices ,
             'driver_judgescore'=>round($judgescore_avg,1)
 			);
-
-
-    }
+      }
 
     $data[] = array('question_data'=>$question_data,'answer_count'=>(int)$answer_count,'answer_data'=>$answer_data) ;
 
