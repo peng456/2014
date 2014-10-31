@@ -28,6 +28,8 @@ $user_item = model('mechanic_user')->get_one($answer_item['mechanic_user_id']);
 $joininfo_item = model('mechanic_joininfo')->get_one($user_item['joininfo_id']);
 $answer_times  = model('mechanic_answer')->get_list(array('mechanic_user_id'=>$answer_item['mechanic_user_id']));
 $judgescore_item = model('mechanic_judgescore')->get_one(array('a_id'=>$data['a_id']));
+$judgescore_avg = ((float)$judgescore_item['resolution']+(float)$judgescore_item['response_time']+(float)$judgescore_item['attitude'])/3;
+
 $data_send = array();
 
 $data_send['id'] = (int)$user_item['user_id'];
@@ -48,6 +50,9 @@ $data_send['driver_comment'] = (string)$answer_item['driver_comment'];
 $data_send['resolution'] = (int)$judgescore_item['resolution'];
 $data_send['answer_response_time'] = (int)$judgescore_item['response_time'];
 $data_send['attitude'] = (int)$judgescore_item['attitude'];
+$data_send['driver_judgescore'] = round($judgescore_avg,1);
+$data_send['pay_amount'] = (int)$answer_item['pay_amount'];
+
 
 $comment_items = model('mechanic_comment')->get_list(array('a_id'=>$data['a_id']));
 $comment_items_count = count($comment_items);
@@ -67,8 +72,10 @@ for($i = 0;$i<$comment_items_count;$i++)
 
 $data_send['comment'] = $comments;
 
-
-
+$view_answer = model('mechanic_answerview')->add(array('a_id'=>$data['a_id'],'user_id'=>$token['owner_id']));
+if(!$view_answer){
+    die_json_msg('answerview表增加失败',10101);
+}
 //更改question状态
 $q_data = model('mechanic_question')->get_one(array('q_id'=>$answer_item['q_id'])) ;
 

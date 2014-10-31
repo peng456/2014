@@ -35,23 +35,25 @@ foreach ($ma_data as $key => $value)
 
 	$q_data = model('mechanic_question')->get_one(array('q_id'=>$value['q_id'])) ;
 	$userdata = model('mechanic_user')->get_one(array('user_id' => (int)$q_data['driver_user_id']) ) ;
-
-	if (!$userdata || !$q_data )
+  	if (!$userdata || !$q_data )
     		die_json_msg('获取问题及用户信息失败',10101);
-
+    $q_type_firstclass  = model('mechanic_question_type')->get_one($q_data['q_type_firstclass']);
+    $q_type_secondclass = model('mechanic_question_type')->get_one($q_data['q_type_secondclass']);
 	$pictures = json_decode($q_data['picture']) ;
 	$voices = json_decode($q_data['voice']) ;
 	$question_data = array(
 		'driver_user_id'=>(int)$userdata['user_id'] ,
 		'driver_name'=>(string)$userdata['nickname'] ,
 		'q_id'=>(int)$value['q_id'] ,
-		'time'=>(int)$value['create_time'] ,
-		'text'=>(string)$value['text'] ,
+        'q_type_firstclass'=>(string)$q_type_firstclass['content'],
+        'q_type_secondclass'=>(string)$q_type_secondclass['content'],
+		'time'=>(int)$q_data['create_time'] ,
+		'text'=>(string)$q_data['text'] ,
 		'pic_count'=>(int)count($pictures) ,
 		'pic_data'=>$pictures ,
 		'voice_count'=>(int)count($voices) ,
 		'voice_data'=>$voices ,
-        'q_status'=>(int)$value['q_status']
+        'q_status'=>(int)$q_data['q_status']
 	) ;
 
 	$a_data = model('mechanic_answer')->get_list(array('q_id'=>$value['q_id'])) ;
@@ -80,8 +82,11 @@ foreach ($ma_data as $key => $value)
     	{
     		$is_self = 0 ;
     	}
+        $driver_judgescore = model('mechanic_judgescore')->get_one(array('a_id'=>$value2['a_id']));
+        $judgescore_avg = ((float)$driver_judgescore['resolution']+(float)$driver_judgescore['response_time']+(float)$driver_judgescore['attitude'])/3;
 
-		$answer_data[] = array(
+
+        $answer_data[] = array(
 			'mechanic_user_id'=>(int)$userdata['user_id'] ,
 			'mechanic_name'=>(string)$joininfo['name'] ,
 			'pay_amount'=>(int)$value2['pay_amount'] ,
@@ -93,6 +98,7 @@ foreach ($ma_data as $key => $value)
 			'pic_data'=>$pictures ,
 			'voice_count'=>(int)count($voices) ,
 			'voice_data'=>$voices ,
+            'driver_judgescore'=>round($judgescore_avg,1)
 			) ;
     }
 
