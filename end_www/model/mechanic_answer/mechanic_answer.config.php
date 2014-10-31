@@ -95,6 +95,7 @@ $end_models['mechanic_answer'] = array(
         'picture' => array(
             'name' => '图片',
             'type' => 'text',
+            'width'=>'100',
             'null' => true
         ),
         'voice' => array(

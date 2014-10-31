@@ -53,7 +53,7 @@ function xml_to_array($xml){
 function random($length = 6 , $numeric = 0) {
     PHP_VERSION < '4.2.0' && mt_srand((double)microtime() * 1000000);
     if($numeric) {
-        $hash = sprintf('%0'.$length.'d', mt_rand(0, pow(10, $length) - 1));
+        $hash = rand(100000,999999) ;
     } else {
         $hash = '';
         $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789abcdefghjkmnpqrstuvwxyz';
