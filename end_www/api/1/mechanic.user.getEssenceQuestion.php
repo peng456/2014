@@ -1,11 +1,13 @@
 <?php
 /**
- * 获取最近提问列表
- * API 3.5
+ * 获取精华问答列表
+ * API 2.12
  *
- * @author duyifan 2014.10.18
+ * @author zhanglipeng 2014.10.28
+ *
+ * change the contion of question ;add contion such as  q_status = 6 ,and $judgescore_avg >= 3
  */
- 
+
 $data = $_POST;
 
 if (!isset($data['access_token']) || !isset($data['from']) || !is_numeric($data['from']) || !in_array($data['type'],array('hottest','last','car')))
@@ -34,6 +36,11 @@ switch($data['type']){
             $count++;
             $answerdata = model('mechanic_answer')->get_one(array('a_id' => $value['a_id']) ) ;
             $questiondata = model('mechanic_question')->get_one(array('q_id' => $answerdata['q_id']) ) ;
+
+            if($questiondata['q_status'] != 6) continue;
+            $judgescore_item = model('mechanic_judgescore')->get_one(array('a_id'=>$answerdata['a_id']));
+            $judgescore_avg = ((float)$judgescore_item['resolution']+(float)$judgescore_item['response_time']+(float)$judgescore_item['attitude'])/3;
+            if($judgescore_avg < 3) continue;
             $driver_user = model('mechanic_user')->get_one(array('user_id' => $questiondata['driver_user_id']) ) ;
             $mechanic_user = model('mechanic_user')->get_one(array('user_id' => $answerdata['mechanic_user_id']) ) ;
             $joininfo = model('mechanic_joininfo')->get_one(array('joininfo_id' => $mechanic_user['joininfo_id'] )) ;
@@ -45,11 +52,7 @@ switch($data['type']){
             $answer_pictures = json_decode($answerdata['picture']);
             $answer_voices = json_decode($answerdata['voice']);
 
-            $driver_judgescore = model('mechanic_judgescore')->get_one(array('a_id'=>$value['a_id']));
-
-            $judgescore_avg = ((float)$driver_judgescore['resolution']+(float)$driver_judgescore['response_time']+(float)$driver_judgescore['attitude'])/3;
-
-            $q_type_firstclass  = model('mechanic_question_type')->get_one($questiondata['q_type_firstclass']);
+            $q_type_firstclass  = model('mechanic_question_type_first')->get_one($questiondata['q_type_firstclass']);
             $q_type_secondclass = model('mechanic_question_type')->get_one($questiondata['q_type_secondclass']);
            $answer_question_data_item[] = array(
                'question_data'=>array(
@@ -96,8 +99,14 @@ switch($data['type']){
         $answer_question_data_item = array() ;
         foreach ($answer_items as $key => $answerdata)
         {
-            $count++;
+
             $questiondata = model('mechanic_question')->get_one(array('q_id' => $answerdata['q_id']) ) ;
+            if($questiondata['status'] != 6) continue;
+            $judgescore_item = model('mechanic_judgescore')->get_one(array('a_id'=>$answerdata['a_id']));
+            $judgescore_avg = ((float)$judgescore_item['resolution']+(float)$judgescore_item['response_time']+(float)$judgescore_item['attitude'])/3;
+            if($judgescore_avg < 3) continue;
+
+
             $driver_user = model('mechanic_user')->get_one(array('user_id' => $questiondata['driver_user_id']) ) ;
             $mechanic_user = model('mechanic_user')->get_one(array('user_id' => $answerdata['mechanic_user_id']) ) ;
             $joininfo = model('mechanic_joininfo')->get_one(array('joininfo_id' => $mechanic_user['joininfo_id'] )) ;
@@ -108,11 +117,7 @@ switch($data['type']){
             $question_voices = json_decode($questiondata['voice']);
             $answer_pictures = json_decode($answerdata['picture']);
             $answer_voices = json_decode($answerdata['voice']);
-
-            $driver_judgescore = model('mechanic_judgescore')->get_one(array('a_id'=>$answerdata['a_id']));
-            $judgescore_avg = ((float)$driver_judgescore['resolution']+(float)$driver_judgescore['response_time']+(float)$driver_judgescore['attitude'])/3;
-
-            $q_type_firstclass  = model('mechanic_question_type')->get_one($questiondata['q_type_firstclass']);
+            $q_type_firstclass  = model('mechanic_question_type_first')->get_one($questiondata['q_type_firstclass']);
             $q_type_secondclass = model('mechanic_question_type')->get_one($questiondata['q_type_secondclass']);
             $answer_question_data_item[] = array(
                 'question_data'=>array(
@@ -145,6 +150,7 @@ switch($data['type']){
                     'voice_data'=>$answer_voices?$answer_voices:""
                 )
             );
+            $count++;
         }
         json_send(array('count'=>$count,'data'=>$answer_question_data_item));
 
@@ -159,7 +165,7 @@ switch($data['type']){
             die_json_msg('car_brand表查询失败', 10101);
         }
         $query_sql_car = "select question.*,answer.a_id,answer.mechanic_user_id ,answer.text as text1,answer.picture as picture1,answer.voice as voice1,answer.create_time as create_time1,answer.pay_amount
-        from end_mechanic_question  as question INNER JOIN end_mechanic_answer as answer USING(q_id) where question.brand = {$data['brand']}  ORDER BY answer.create_time DESC LIMIT {$data['from']},10";
+        from end_mechanic_question  as question INNER JOIN end_mechanic_answer as answer USING(q_id) where question.brand = {$data['brand']}  and question.q_status = 6  ORDER BY answer.create_time DESC LIMIT {$data['from']},10";
 
         $question_answer_items = model('mechanic_question')->get_list(array('_custom_sql'=>$query_sql_car));
         if($question_answer_items === null)
@@ -171,7 +177,12 @@ switch($data['type']){
         $answer_question_data = array() ;
         foreach ($question_answer_items as $key => $answer_question_data_item)
         {
-            $count++;
+
+
+
+            $driver_judgescore = model('mechanic_judgescore')->get_one(array('a_id'=>$answer_question_data_item['a_id']));
+            $judgescore_avg = ((float)$driver_judgescore['resolution']+(float)$driver_judgescore['response_time']+(float)$driver_judgescore['attitude'])/3;
+            if($judgescore_avg < 3) continue;
 
             $driver_user = model('mechanic_user')->get_one(array('user_id' => $answer_question_data_item['driver_user_id']) ) ;
             $mechanic_user = model('mechanic_user')->get_one(array('user_id' => $answer_question_data_item['mechanic_user_id']) ) ;
@@ -184,11 +195,8 @@ switch($data['type']){
             $answer_pictures = json_decode($answer_question_data_item['picture1']);
             $answer_voices = json_decode($answer_question_data_item['voice1']);
 
-            $driver_judgescore = model('mechanic_judgescore')->get_one(array('a_id'=>$answer_question_data_item['a_id']));
 
-            $judgescore_avg = ((float)$driver_judgescore['resolution']+(float)$driver_judgescore['response_time']+(float)$driver_judgescore['attitude'])/3;
-
-            $q_type_firstclass  = model('mechanic_question_type')->get_one($answer_question_data_item['q_type_firstclass']);
+            $q_type_firstclass  = model('mechanic_question_type_first')->get_one($answer_question_data_item['q_type_firstclass']);
             $q_type_secondclass = model('mechanic_question_type')->get_one($answer_question_data_item['q_type_secondclass']);
             $answer_question_data[] = array(
                 'question_data'=>array(
@@ -221,6 +229,7 @@ switch($data['type']){
                     'voice_data'=>$answer_voices?$answer_voices:""
                 )
             );
+            $count++;
         }
         json_send(array('count'=>$count,'data'=>$answer_question_data));
 }
