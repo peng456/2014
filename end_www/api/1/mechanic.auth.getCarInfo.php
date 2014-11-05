@@ -25,7 +25,7 @@ switch ($data['type']) {
 		foreach ($brand_data as $key => $value) 
 		{
 			$count++ ;
-			$data[] = array('id'=>$value['car_brand_id'],'content'=>$value['brand_name']) ;
+			$data[] = array('id'=>(int)$value['car_brand_id'],'content'=>$value['brand_name']) ;
 		}
 		json_send(array('count'=>(int)$count,'data'=>$data)) ;
 		break;
@@ -37,7 +37,7 @@ switch ($data['type']) {
 		foreach ($series_data as $key => $value) 
 		{
 			$count++ ;
-			$data[] = array('id'=>$value['car_series_id'],'content'=>$value['series']) ;
+			$data[] = array('id'=>(int)$value['car_series_id'],'content'=>$value['series']) ;
 		}
 		json_send(array('count'=>(int)$count,'data'=>$data)) ;
 		break;
@@ -49,7 +49,7 @@ switch ($data['type']) {
 		foreach ($model_data as $key => $value) 
 		{
 			$count++ ;
-			$data[] = array('id'=>$value['car_model_id'],'content'=>$value['car_model_name']) ;
+			$data[] = array('id'=>(int)$value['car_model_id'],'content'=>$value['car_model_name']) ;
 		}
 		json_send(array('count'=>(int)$count,'data'=>$data)) ;
 		break;
@@ -61,7 +61,7 @@ switch ($data['type']) {
 		foreach ($model_data as $key => $value) 
 		{
 			$count++ ;
-			$data[] = array('id'=>$value['q_type_id'],'content'=>$value['content']) ;
+			$data[] = array('id'=>(int)$value['q_type_id'],'content'=>$value['content']) ;
 		}
 		json_send(array('count'=>(int)$count,'data'=>$data)) ;
 		break;

@@ -25,11 +25,11 @@ $mechanic_user_id = $item['owner_id'] ;
 $count = 0 ;
 $data = array() ;
 
-$ma_data = $db->get_all("SELECT * FROM end_mechanic_answer WHERE mechanic_user_id = $mechanic_user_id ORDER BY create_time DESC LIMIT $from,10 ") ;
+$ma_data = $db->get_all("SELECT * FROM end_mechanic_accept WHERE mechanic_user_id = $mechanic_user_id ORDER BY create_time DESC LIMIT $from,10 ") ;
 if (!$ma_data)
     	die_json_msg('没有回答过问题',30500) ;
 
-foreach ($ma_data as $key => $value) 
+foreach ($ma_data as $key => $value)
 {
 	$count++ ;
 
@@ -37,13 +37,14 @@ foreach ($ma_data as $key => $value)
 	$userdata = model('mechanic_user')->get_one(array('user_id' => (int)$q_data['driver_user_id']) ) ;
   	if (!$userdata || !$q_data )
     		die_json_msg('获取问题及用户信息失败',10101);
-    $q_type_firstclass  = model('mechanic_question_type')->get_one($q_data['q_type_firstclass']);
+    $q_type_firstclass  = model('mechanic_question_type_first')->get_one($q_data['q_type_firstclass']);
     $q_type_secondclass = model('mechanic_question_type')->get_one($q_data['q_type_secondclass']);
 	$pictures = json_decode($q_data['picture']) ;
 	$voices = json_decode($q_data['voice']) ;
 	$question_data = array(
 		'driver_user_id'=>(int)$userdata['user_id'] ,
 		'driver_name'=>(string)$userdata['nickname'] ,
+		'driver_avatar'=>(string)$userdata['avatar'] ,
 		'q_id'=>(int)$value['q_id'] ,
         'q_type_firstclass'=>(string)$q_type_firstclass['content'],
         'q_type_secondclass'=>(string)$q_type_secondclass['content'],
@@ -56,7 +57,7 @@ foreach ($ma_data as $key => $value)
         'q_status'=>(int)$q_data['q_status']
 	) ;
 
-	$a_data = model('mechanic_answer')->get_list(array('q_id'=>$value['q_id'])) ;
+	$a_data = model('mechanic_answer')->get_list(array('q_id'=>$value['q_id'],'mechanic_user_id'=>$item['owner_id'])) ;
 	if ($a_data === null)
     	die_json_msg('database error',10003) ;
 
@@ -89,8 +90,9 @@ foreach ($ma_data as $key => $value)
         $answer_data[] = array(
 			'mechanic_user_id'=>(int)$userdata['user_id'] ,
 			'mechanic_name'=>(string)$joininfo['name'] ,
-			'pay_amount'=>(int)$value2['pay_amount'] ,
-			'is_self'=>(int)$is_self ,
+			'mechanic_avatar'=>(string)$userdata['avatar'] ,
+			'pay_amount'=>(int)$value2['pay_amount'],
+			'is_self'=>(int)$is_self,
 			'a_id'=>(int)$value2['a_id'] ,
 			'time'=>(int)$value2['create_time'] ,
 			'text'=>(string)$value2['text'] ,

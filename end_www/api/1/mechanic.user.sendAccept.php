@@ -22,9 +22,7 @@ if (!$token)
     die_json_msg('access_token不可用', 10600);
 }
 
-$accept_item  = model('mechanic_accept')->add(array('q_id'=>(int)$data['q_id'],'mechanic_user_id'=>(int)$token['owner_id'],'create_time'=>time(),'is_push'=>0));
-
-
+$accept_item  = model('mechanic_accept')->set(array('q_id'=>(int)$data['q_id'],'mechanic_user_id'=>(int)$token['owner_id'],'create_time'=>time(),'is_push'=>0),array('q_id'=>(int)$data['q_id'],'mechanic_user_id'=>(int)$token['owner_id']));
 
 if (!$accept_item)
 {
@@ -49,7 +47,7 @@ if ($select_qdata['type'] == 0 && count($accept_count) == 9)
 
     foreach ($mechanic_data as $key => $value)
     {
-        $question_mechanic_item = model('mechanic_question_mechanic')->add(array('q_id'=>$value['q_id'],'mechanic_user_id'=>$value['mechanic_user_id'],'status'=>0)) ;
+        $question_mechanic_item = model('mechanic_question_mechanic')->set(array('q_id'=>$value['q_id'],'mechanic_user_id'=>$value['mechanic_user_id'],'status'=>0),array('q_id'=>$value['q_id'],'mechanic_user_id'=>$value['mechanic_user_id'])) ;
         if (!$question_mechanic_item)
             die_json_msg('question_mechanic表增加失败',10003);
     }

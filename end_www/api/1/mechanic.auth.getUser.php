@@ -204,7 +204,7 @@ if ($data['role'] == "mechanic"){             //技工用户
     $item_mechanic_user = model('mechanic_user')->add($user_insert_data);
     if (!$item_mechanic_user)
     {
-        die_json_msg('database error: add user error', 10003);
+        die_json_msg('user表增加失败', 10101);
     }
 
 

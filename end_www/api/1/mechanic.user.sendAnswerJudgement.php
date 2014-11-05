@@ -81,12 +81,14 @@ if ($data_judge_insert['attitude'] +
     $data_judge_insert['response_time'] +
     $data_judge_insert['resolution'] >= 12 )
 {
-    $res = model('mechanic_good')->add(array(
+    $res = model('mechanic_good')->set(array(
         'driver_user_id'=>$data_judge_insert['driver_user_id'] ,
         'mechanic_user_id'=>$user_id ,
         'is_push'=>0 ,
-        'a_id'=>$data_judge_insert['a_id'] ,
-        ) ) ;
+        'a_id'=>$data_judge_insert['a_id']),
+        array( 'driver_user_id'=>$data_judge_insert['driver_user_id'] ,
+        'mechanic_user_id'=>$user_id,'a_id'=>$data_judge_insert['a_id'])
+    ) ;
     if(!$res)
     {
         die_json_msg('good表增加失败', 10101);
@@ -106,12 +108,16 @@ if(!$q_data)
     die_json_msg('获取question信息失败', 20800);
 }
 $res2 = model('mechanic_answer')->update($data['a_id'],array('pay_amount'=>(int)$data['reward'])) ;
-$res3 = model('mechanic_reward')->add(array(
-        'driver_user_id'=>$data_judge_insert['driver_user_id'] ,
-        'mechanic_user_id'=>$user_id ,
-        'is_push'=>0 ,
-        'reward'=>(int)$data['reward'] ,
-        )) ;
+$res3 = model('mechanic_reward')->set(array(
+    'driver_user_id'=>$data_judge_insert['driver_user_id'] ,
+    'mechanic_user_id'=>$user_id ,
+    'a_id'=>$data['a_id'],
+    'is_push'=>0 ,
+    'reward'=>(int)$data['reward']),
+    array( 'driver_user_id'=>$data_judge_insert['driver_user_id'] ,
+    'mechanic_user_id'=>$user_id ,
+    'a_id'=>$data['a_id'])
+  );
 if(!$res2 || !$res3)
 {
     die_json_msg('answer表或reward表更新失败', 20801);

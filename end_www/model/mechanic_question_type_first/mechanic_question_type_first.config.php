@@ -4,9 +4,9 @@
  *
  * @author deanmongel
  */
-$end_models['mechanic_question_type'] = array(
+$end_models['mechanic_question_type_first'] = array(
     'type' => 'list', //表示这是一个列表型的模型，对应一个数据库的表
-    'name' => '问题类型列表',	//某型的名字，可以把一个栏目配置成某个模型
+    'name' => '问题类型一级列表',	//某型的名字，可以把一个栏目配置成某个模型
     'list_items'=>30, //后台每页显示
     'no_category'=>true,
     'category_fields'=> array(
@@ -23,12 +23,7 @@ $end_models['mechanic_question_type'] = array(
             'type' => 'text',//类型
             'null' => true
         ),
-        'p_id' => array(
-            'name' => '父ID',
-            'type' => 'text',
-            'null' => true
-        ),
-        'content' => array(
+       'content' => array(
             'name' => '内容',
             'type' => 'text',
             'null' => true
@@ -36,19 +31,11 @@ $end_models['mechanic_question_type'] = array(
     ),
     //显示在列表中的内容
     'list_fields' => array(
-        'q_type_id'=>array(//数据库中的字段名
+       'q_type_id' => array(
             'name'=>'ID',//显示在后台的名字
             'width'=>'30',
             'sort'=>true,
             'align'=>'center',
-            'search'=>true
-        ),
-
-        'p_id'=>array(
-            'name'=>'父ID',
-            'width'=>'auto',
-            'type'=>'text',
-            'search'=>true,
             'search'=>true
         ),
         'content'=>array(
@@ -60,12 +47,12 @@ $end_models['mechanic_question_type'] = array(
         '_options'=>array(//显示操作里面的按钮
             'name'=>'操作',
             'width'=>100,
-            'filter'=>'show_mechanic_question_type_options'
+            'filter'=>'show_mechanic_question_type_first_options'
         )
     )
 );
 
-function show_mechanic_question_type_date($t)
+function show_mechanic_question_type_first_date($t)
 {
     return date('Y-m-d H:i:s',$t);
 }
@@ -73,11 +60,11 @@ function show_mechanic_question_type_date($t)
 //添加权限设置项
 $end_rights[] = array(
     'name'=>'mechanic_question_type',
-    'description'=>'问题类型列表',
+    'description'=>'问题类型一级列表',
     'rights'=>array('view','delete','update','add')
 );
 
-function show_mechanic_question_type_options($item)
+function show_mechanic_question_type_first_options($item)
 {
     $id = 'q_type_id';
     end_show_view_button($item[$id]);

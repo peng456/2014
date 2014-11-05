@@ -35,7 +35,7 @@ foreach ($q_data as $key => $value)
 	$count++ ;
 	$pictures = json_decode($value['picture']) ;
 	$voices = json_decode($value['voice']) ;
-    $q_type_firstclass  = model('mechanic_question_type')->get_one($value['q_type_firstclass']);
+    $q_type_firstclass  = model('mechanic_question_type_first')->get_one($value['q_type_firstclass']);
     $q_type_secondclass = model('mechanic_question_type')->get_one($value['q_type_secondclass']);
 	$question_data = array(
         'driver_user_id'=>(int)$driver_user['user_id'] ,

@@ -51,7 +51,7 @@ $data_insert_answer ['create_time'] =  time();
 
 
 
-$answer_item = model('mechanic_answer')->add($data_insert_answer);
+$answer_item = model('mechanic_answer')->set($data_insert_answer,array('mechanic_user_id'=>$token['owner_id'],'q_id'=>$data['q_id']));
 if(!$answer_item)
 {
     die_json_msg('answer表增加失败', 10101);

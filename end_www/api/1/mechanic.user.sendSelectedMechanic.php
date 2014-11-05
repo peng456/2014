@@ -26,7 +26,7 @@ if(!$selected_mechanic)
 
 foreach ($selected_mechanic['selected_mechanic'] as $key => $value) 
 {
-	$res = model('mechanic_question_mechanic')->add(array('q_id'=>$data['q_id'],'mechanic_user_id'=>$value,'status'=>0,'create_time'=>time())) ;
+	$res = model('mechanic_question_mechanic')->set(array('q_id'=>$data['q_id'],'mechanic_user_id'=>$value,'status'=>0,'create_time'=>time()),array('q_id'=>$data['q_id'],'mechanic_user_id'=>$value));
 	if(!$res)
 		die_json_msg('question_mechanic表更新失败',10101) ;
 }

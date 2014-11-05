@@ -34,9 +34,12 @@ if($car_data->data){
         $brand_data = model('mechanic_car_brand')->get_one((int)$value->brand);
         $series_data = model('mechanic_car_series')->get_one((int)$value->series);
         $model_data = model('mechanic_car_model')->get_one((int)$value->model);
-        $car_data_array[$i]['brand'] = (string)$brand_data['brand_name'];
-        $car_data_array[$i]['series'] = (string)$series_data['series'];
-        $car_data_array[$i]['model'] = (string)$model_data['car_model_name'];
+        $car_data_array[$i]['brand'] = (int)$value->brand;
+        $car_data_array[$i]['brandname'] = (string)$brand_data['brand_name'];
+        $car_data_array[$i]['series'] = (int)$value->series;
+        $car_data_array[$i]['seriesname'] = (string)$series_data['series'];
+        $car_data_array[$i]['model'] = (int)$value->model;
+        $car_data_array[$i]['modelname'] = (string)$model_data['car_model_name'];
         $car_data_array[$i]['year'] = (int)$value->year;
         $i++;
     }

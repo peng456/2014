@@ -42,7 +42,8 @@ if ($data['q_id'] == 0)
 
 	if ($question_count === null)
     	die_json_msg('question表查询失败',10101);
-
+    $q_type_firstclass  = model('mechanic_question_type_first')->get_one($select_qdata['q_type_firstclass']);
+    $q_type_secondclass = model('mechanic_question_type')->get_one($select_qdata['q_type_secondclass']);
 
 	$res_data = array(
 		'q_id'=>(int)$select_qdata['q_id'] ,
@@ -50,7 +51,8 @@ if ($data['q_id'] == 0)
 		'nickname'=>(string)$userdata['nickname'] ,
 		'avatar'=>(string)$userdata['avatar'] ,
 		'question_count'=>(int)$question_count ,
-		'q_type'=>(int)$select_qdata['type'] ,
+        'q_type_firstclass'=>(string)$q_type_firstclass['content'],
+        'q_type_secondclass'=>(string)$q_type_secondclass['content'],
 		'reward'=>(int)$select_qdata['reward'] ,
 		'text'=>(string)$select_qdata['text'] ,
 		'pic_count'=>(int)count($pictures) ,

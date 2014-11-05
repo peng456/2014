@@ -61,7 +61,9 @@ if ($data['type'] == 0)
 	$data_insert_question['quick_count'] = $data['quickcount'] ;
 }
 
-$question_item = model('mechanic_question')->add($data_insert_question);
+$now_time_range = $now_time - 60;
+$question_item = model('mechanic_question')->set($data_insert_question,array('driver_user_id'=>$token['owner_id'],'text'=>$data_receive['text'],'where'=>"createtime > $now_time_range"));
+
 
 if(!$question_item)
 {
