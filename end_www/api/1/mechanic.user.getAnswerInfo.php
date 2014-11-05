@@ -45,12 +45,14 @@ $data_send['pic_count'] =  count($pic);
 $data_send['pic_data'] = $pic;
 $voice = json_decode($answer_item['voice']);
 $data_send['voice_count'] = count($voice);
+$data_send['voice_length'] = (int)$answer_item['voice_length'];
 $data_send['voice_data'] = $voice;
 $data_send['driver_comment'] = (string)$answer_item['driver_comment'];
 $data_send['resolution'] = (int)$judgescore_item['resolution'];
 $data_send['answer_response_time'] = (int)$judgescore_item['response_time'];
 $data_send['attitude'] = (int)$judgescore_item['attitude'];
 $data_send['driver_judgescore'] = round($judgescore_avg,1);
+$data_send['is_repair'] = (int)$answer_item['is_repair'];
 $data_send['pay_amount'] = (int)$answer_item['pay_amount'];
 
 

@@ -67,6 +67,7 @@ switch($data['type']){
                 'pic_count'=>(int)count($question_pictures) ,
                 'pic_data'=>$question_pictures?$question_pictures:"" ,
                 'voice_count'=>(int)count($question_voices),
+                'voice_length'=>(int)$questiondata['voice_length'],
                 'voice_data'=>$question_voices?$question_voices:"",
                 'q_status'=>(int)$questiondata['q_status']
                ),
@@ -83,6 +84,7 @@ switch($data['type']){
                'pic_count'=>(int)count($answer_pictures) ,
                'pic_data'=>$answer_pictures?$answer_pictures:"",
                'voice_count'=>(int)count($answer_voices),
+               'voice_length'=>(int)$answerdata['voice_length'],
                'voice_data'=>$answer_voices?$answer_voices:""
                )
             );
@@ -132,6 +134,7 @@ switch($data['type']){
                     'pic_count'=>(int)count($question_pictures) ,
                     'pic_data'=>$question_pictures?$question_pictures:"" ,
                     'voice_count'=>(int)count($question_voices) ,
+                    'voice_length'=>(int)$questiondata['voice_length'],
                     'voice_data'=>$question_voices?$question_voices:""
                 ),
                 'answer_count'=>1,
@@ -147,6 +150,7 @@ switch($data['type']){
                     'pic_count'=>(int)count($answer_pictures) ,
                     'pic_data'=>$answer_pictures?$answer_pictures:"" ,
                     'voice_count'=>(int)count($answer_voices) ,
+                    'voice_length'=>(int)$answerdata['voice_length'],
                     'voice_data'=>$answer_voices?$answer_voices:""
                 )
             );
@@ -164,7 +168,7 @@ switch($data['type']){
         {
             die_json_msg('car_brand表查询失败', 10101);
         }
-        $query_sql_car = "select question.*,answer.a_id,answer.mechanic_user_id ,answer.text as text1,answer.picture as picture1,answer.voice as voice1,answer.create_time as create_time1,answer.pay_amount
+        $query_sql_car = "select question.*,answer.a_id,answer.mechanic_user_id ,answer.text as text1,answer.picture as picture1,answer.voice_length as voice_length1,answer.voice as voice1,answer.create_time as create_time1,answer.pay_amount
         from end_mechanic_question  as question INNER JOIN end_mechanic_answer as answer USING(q_id) where question.brand = {$data['brand']}  and question.q_status = 6  ORDER BY answer.create_time DESC LIMIT {$data['from']},10";
 
         $question_answer_items = model('mechanic_question')->get_list(array('_custom_sql'=>$query_sql_car));
@@ -211,6 +215,7 @@ switch($data['type']){
                     'pic_count'=>(int)count($question_pictures) ,
                     'pic_data'=>$question_pictures?$question_pictures:"" ,
                     'voice_count'=>(int)count($question_voices) ,
+                    'voice_length'=>(int)$answer_question_data_item['voice_length'],
                     'voice_data'=>$question_voices?$question_voices:""
                 ),
                 'answer_count'=>1,
@@ -226,6 +231,7 @@ switch($data['type']){
                     'pic_count'=>(int)count($answer_pictures) ,
                     'pic_data'=>$answer_pictures?$answer_pictures:"" ,
                     'voice_count'=>(int)count($answer_voices) ,
+                    'voice_length'=>(int)$answer_question_data_item['voice_length1'],
                     'voice_data'=>$answer_voices?$answer_voices:""
                 )
             );

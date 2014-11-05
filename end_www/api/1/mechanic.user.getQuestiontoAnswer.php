@@ -31,6 +31,7 @@ $question_data = array(
 	'pic_count'=>(int)count($pictures) ,
 	'pic_data'=>$pictures ,
 	'voice_count'=>(int)count($voices) ,
+	'voice_length'=>(int)$q_data['voice_length'] ,
 	'voice_data'=>$voices ,
 	'create_time'=>(int)$q_data['create_time']
 	) ;

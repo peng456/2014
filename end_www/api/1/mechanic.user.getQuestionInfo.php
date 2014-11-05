@@ -58,7 +58,9 @@ if ($data['q_id'] == 0)
 		'pic_count'=>(int)count($pictures) ,
 		'pic_data'=>$pictures ,
 		'voice_count'=>(int)count($voices) ,
+		'voice_length'=>(int)$select_qdata['voice_length'] ,
 		'voice_data'=>$voices ,
+		'q_status'=>(int)$select_qdata['q_status'] ,
 	) ;
 
 
@@ -103,6 +105,7 @@ else
 		'pic_count'=>(int)count($pictures) ,
 		'pic_data'=>$pictures ,
 		'voice_count'=>(int)count($voices) ,
+		'voice_length'=>(int)$q_data['voice_length'] ,
 		'voice_data'=>$voices ,
 	) ;
 

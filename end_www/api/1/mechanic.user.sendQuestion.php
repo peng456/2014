@@ -38,6 +38,7 @@ if($data_receive['pic_data'])
 
 if($data_receive['voice_data'])
 {
+	$data_insert_question ['voice_length'] =  (int)$data_receive['voice_length'];
 	$data_insert_question ['voice'] =  json_encode($data_receive['voice_data']);
 };
 

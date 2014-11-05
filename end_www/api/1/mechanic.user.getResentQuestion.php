@@ -49,6 +49,7 @@ foreach ($q_data as $key => $value)
 		'pic_count'=>(int)count($pictures) ,
 		'pic_data'=>$pictures ,
 		'voice_count'=>(int)count($voices) ,
+        'voice_length'=>(int)$value['voice_length'] ,
 		'voice_data'=>$voices ,
         'q_status'=>(int)$value['q_status']
 	) ;
@@ -83,6 +84,7 @@ foreach ($q_data as $key => $value)
             'pic_count'=>(int)count( $answer_pictures) ,
             'pic_data'=> $answer_pictures ,
             'voice_count'=>(int)count($answer_voices) ,
+            'voice_length'=>(int)$value2['voice_length'] ,
             'voice_data'=>$answer_voicesvoices ,
             'driver_judgescore'=>round($judgescore_avg,1)
 			);

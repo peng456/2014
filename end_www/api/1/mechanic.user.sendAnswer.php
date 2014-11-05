@@ -41,11 +41,13 @@ if($data_receive['pic_data'])
 
 if($data_receive['voice_data'])
 {
+	$data_insert_answer ['voice_length'] = (int)$data_receive['voice_length'];
 	$data_insert_answer ['voice'] = json_encode($data_receive['voice_data']);
 };
 
 $data_insert_answer ['q_id'] =  $data['q_id'];
 $data_insert_answer ['mechanic_user_id'] = $token['owner_id'];
+$data_insert_answer ['is_repair'] = (int)$data_receive['is_repair'];
 
 $data_insert_answer ['create_time'] =  time();
 

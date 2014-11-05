@@ -53,6 +53,7 @@ foreach ($ma_data as $key => $value)
 		'pic_count'=>(int)count($pictures) ,
 		'pic_data'=>$pictures ,
 		'voice_count'=>(int)count($voices) ,
+		'voice_length'=>(int)$q_data['voice_length'] ,
 		'voice_data'=>$voices ,
         'q_status'=>(int)$q_data['q_status']
 	) ;
@@ -99,6 +100,7 @@ foreach ($ma_data as $key => $value)
 			'pic_count'=>(int)count($pictures) ,
 			'pic_data'=>$pictures ,
 			'voice_count'=>(int)count($voices) ,
+            'voice_length'=>(int)$value2['voice_length'] ,
 			'voice_data'=>$voices ,
             'driver_judgescore'=>round($judgescore_avg,1)
 			) ;
