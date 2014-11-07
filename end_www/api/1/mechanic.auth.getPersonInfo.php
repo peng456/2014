@@ -62,8 +62,9 @@ $data_user['joininfo_id'] = (int)$userdata['joininfo_id'];
 
 if($userdata['role'] && $userdata['joininfo_id'] )
 {
+    $rang_time = time() - 2592000;
     $joininfo = model('mechanic_joininfo')->get_one(array('joininfo_id' => $userdata['joininfo_id'] )) ;
-    $answer_times = get_query_item_count("SELECT COUNT(*) FROM end_mechanic_answer WHERE mechanic_user_id = $userdata[user_id]") ;
+    $answer_times = get_query_item_count("SELECT COUNT(*) FROM end_mechanic_answer WHERE mechanic_user_id = $userdata[user_id] and create_time > $rang_time") ;
 
     if (!$joininfo){
         die_json_msg('user表或joininfo表无技师数据',20100);
@@ -84,6 +85,8 @@ if($userdata['role'] && $userdata['joininfo_id'] )
     {
         die_json_msg('city表、brand表',20400);
     }
+
+
 
     $data = array(
         'name'=>(string)$joininfo['name'] ,

@@ -5,7 +5,7 @@
  *
  * @author zhanglipeng 2014.10.28
  *
- * change the contion of question ;add contion such as  q_status = 6 ,and $judgescore_avg >= 3
+ * change the contion of question ;add contion such as  q_status = 6 ,and $judgescore_avg >= 4
  */
 
 $data = $_POST;
@@ -40,7 +40,7 @@ switch($data['type']){
             if($questiondata['q_status'] != 6) continue;
             $judgescore_item = model('mechanic_judgescore')->get_one(array('a_id'=>$answerdata['a_id']));
             $judgescore_avg = ((float)$judgescore_item['resolution']+(float)$judgescore_item['response_time']+(float)$judgescore_item['attitude'])/3;
-            if($judgescore_avg < 3) continue;
+            if($judgescore_avg < 4) continue;
             $driver_user = model('mechanic_user')->get_one(array('user_id' => $questiondata['driver_user_id']) ) ;
             $mechanic_user = model('mechanic_user')->get_one(array('user_id' => $answerdata['mechanic_user_id']) ) ;
             $joininfo = model('mechanic_joininfo')->get_one(array('joininfo_id' => $mechanic_user['joininfo_id'] )) ;
@@ -106,7 +106,7 @@ switch($data['type']){
             if($questiondata['status'] != 6) continue;
             $judgescore_item = model('mechanic_judgescore')->get_one(array('a_id'=>$answerdata['a_id']));
             $judgescore_avg = ((float)$judgescore_item['resolution']+(float)$judgescore_item['response_time']+(float)$judgescore_item['attitude'])/3;
-            if($judgescore_avg < 3) continue;
+            if($judgescore_avg < 4) continue;
 
 
             $driver_user = model('mechanic_user')->get_one(array('user_id' => $questiondata['driver_user_id']) ) ;
@@ -186,7 +186,7 @@ switch($data['type']){
 
             $driver_judgescore = model('mechanic_judgescore')->get_one(array('a_id'=>$answer_question_data_item['a_id']));
             $judgescore_avg = ((float)$driver_judgescore['resolution']+(float)$driver_judgescore['response_time']+(float)$driver_judgescore['attitude'])/3;
-            if($judgescore_avg < 3) continue;
+            if($judgescore_avg < 4) continue;
 
             $driver_user = model('mechanic_user')->get_one(array('user_id' => $answer_question_data_item['driver_user_id']) ) ;
             $mechanic_user = model('mechanic_user')->get_one(array('user_id' => $answer_question_data_item['mechanic_user_id']) ) ;

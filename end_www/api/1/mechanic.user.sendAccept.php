@@ -21,8 +21,8 @@ if (!$token)
 {
     die_json_msg('access_token不可用', 10600);
 }
-
-$accept_item  = model('mechanic_accept')->set(array('q_id'=>(int)$data['q_id'],'mechanic_user_id'=>(int)$token['owner_id'],'create_time'=>time(),'is_push'=>0),array('q_id'=>(int)$data['q_id'],'mechanic_user_id'=>(int)$token['owner_id']));
+$now_time = time();
+$accept_item  = model('mechanic_accept')->set(array('q_id'=>(int)$data['q_id'],'mechanic_user_id'=>(int)$token['owner_id'],'create_time'=>$now_time,'is_push'=>0),array('q_id'=>(int)$data['q_id'],'mechanic_user_id'=>(int)$token['owner_id']));
 
 if (!$accept_item)
 {
@@ -59,6 +59,22 @@ if ($select_qdata['q_status'] == 1)
 	if (!$question_update){
         die_json_msg('question表更新q_status失败',10101);
     }
+}
+
+
+
+//update joininfo table  accept_count、response_time
+
+$user = model('mechanic_user')->get_one((int)$token['owner_id']);
+$question_time = model('mechanic_question')->get_one($data['q_id']);
+$now_response = (int)$now_time - (int)$question_time['create_time'];
+
+$custom_sql = "update  end_mechanic_joininfo as tab2 inner join(select joininfo_id,accept_count,response_time from end_mechanic_joininfo WHERE joininfo_id = 3 ) as tab1 using(joininfo_id) set tab2.accept_count = (tab1.accept_count+1),
+                tab2.response_time = (tab1.accept_count*tab1.response_time+ $now_response)/(tab1.accept_count +1) ;";
+$joininfo_update = model('mechanic_joininfo')->get_one(array('_custom_sql'=>$custom_sql));
+
+if(!$joininfo_update){
+    die_json_msg('joininfo表更新失败',10101);
 }
 
 json_send(

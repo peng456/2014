@@ -45,12 +45,20 @@ if ($data['q_id'] == 0)
     $q_type_firstclass  = model('mechanic_question_type_first')->get_one($select_qdata['q_type_firstclass']);
     $q_type_secondclass = model('mechanic_question_type')->get_one($select_qdata['q_type_secondclass']);
 
+   $brand_item  =  model('mechanic_car_brand')->get_one($select_qdata['brand']);
+   $model_item  =  model('mechanic_car_model')->get_one($select_qdata['model']);
+   $series_item =  model('mechanic_car_series')->get_one($select_qdata['series']);
+
 	$res_data = array(
 		'q_id'=>(int)$select_qdata['q_id'] ,
 		'user_id'=>(int)$userdata['user_id'] ,
 		'nickname'=>(string)$userdata['nickname'] ,
 		'avatar'=>(string)$userdata['avatar'] ,
 		'question_count'=>(int)$question_count ,
+        'brand'=>(string)$brand_item['brand_name'] ,
+        'model'=>(string)$model_item['car_model_name'] ,
+        'series'=>(string)$series_item['series'] ,
+        'year'=>(int)$select_qdata['year'] ,
         'q_type_firstclass'=>(string)$q_type_firstclass['content'],
         'q_type_secondclass'=>(string)$q_type_secondclass['content'],
 		'reward'=>(int)$select_qdata['reward'] ,
@@ -93,13 +101,25 @@ else
 	if ($question_count === null)
     	die_json_msg('question表查询失败',10101);
 
+    $q_type_firstclass  = model('mechanic_question_type_first')->get_one($q_data['q_type_firstclass']);
+    $q_type_secondclass = model('mechanic_question_type')->get_one($q_data['q_type_secondclass']);
+
+    $brand_item  =  model('mechanic_car_brand')->get_one($q_data['brand']);
+    $model_item  =  model('mechanic_car_model')->get_one($q_data['model']);
+    $series_item =  model('mechanic_car_series')->get_one($q_data['series']);
+
 	$res_data = array(
 		'q_id'=>(int)$data['q_id'] ,
 		'user_id'=>(int)$userdata['user_id'] ,
 		'nickname'=>(string)$userdata['nickname'] ,
 		'avatar'=>(string)$userdata['avatar'] ,
 		'question_count'=>(int)$question_count ,
-		'q_type'=>(int)$q_data['type'] ,
+        'brand'=>(string)$brand_item['brand_name'] ,
+        'model'=>(string)$model_item['car_model_name'] ,
+        'series'=>(string)$series_item['series'] ,
+        'year'=>(int)$q_data['year'] ,
+        'q_type_firstclass'=>(string)$q_type_firstclass['content'],
+        'q_type_secondclass'=>(string)$q_type_secondclass['content'],
 		'reward'=>(int)$q_data['reward'] ,
 		'text'=>(string)$q_data['text'] ,
 		'pic_count'=>(int)count($pictures) ,
@@ -107,6 +127,7 @@ else
 		'voice_count'=>(int)count($voices) ,
 		'voice_length'=>(int)$q_data['voice_length'] ,
 		'voice_data'=>$voices ,
+        'q_status'=>(int)$q_data['q_status'] ,
 	) ;
 
 	json_send($res_data) ;

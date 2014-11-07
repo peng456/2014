@@ -93,11 +93,26 @@ if ($data_judge_insert['attitude'] +
     {
         die_json_msg('good表增加失败', 10101);
     }
+
+   $good_count   = model('mechanic_good')->get_list("select count(*) as good_count from end_mechanic_good where mechanic_user_id =  $user_id");
+   $answer_count = model('mechanic_answer')->get_list("select count(*) as answer_count from end_mechanic_answer where mechanic_user_id =  $user_id");
+
+    $repution = (round(($good_count['good_count']/$answer_count['answer_count']),2))*100;
+
+    $joininfo_sql =  "update end_mechanic_joininfo set  repution =  $repution where joininfo_id = (select joininfo_id from end_mechanic_user when user_id = $user_id) ";
+
+    $repution_set = model('mechanic_joininfo')->get_one(array('_custom_sql'=>$joininfo_sql));
+
+    if(!$repution_set)
+    {
+        die_json_msg('joininfo表更新失败', 10101);
+    }
 }
 
 //因为需求改为只选一人，故赏金全给一人
 
 $res_question = model('mechanic_question')->update($q_id,array('is_soluted'=>1)) ;
+
 if(!$res_question)
 {
     die_json_msg('question表更新失败', 10101);
