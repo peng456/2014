@@ -59,6 +59,7 @@ if ($data['q_id'] == 0)
         'model'=>(string)$model_item['car_model_name'] ,
         'series'=>(string)$series_item['series'] ,
         'year'=>(int)$select_qdata['year'] ,
+        'type'=>(int)$select_qdata['type'] ,
         'q_type_firstclass'=>(string)$q_type_firstclass['content'],
         'q_type_secondclass'=>(string)$q_type_secondclass['content'],
 		'reward'=>(int)$select_qdata['reward'] ,

@@ -162,7 +162,7 @@ class MODEL
 			
 			$sql = $this->make_select_sql($_table,$data,$_select).$sql;
 		}
-		
+
 		return $GLOBALS['db']->get_all($sql);
 	}
 	

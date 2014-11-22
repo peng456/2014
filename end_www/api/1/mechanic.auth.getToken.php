@@ -27,7 +27,7 @@ if (!$item)
 }
 
 # generate pub_id for obd
-$db->query("update end_mechanic_token set status='invalid' where token_type='user' and owner_id=$item[user_id] and status='valid'");
+ $db->query("update end_mechanic_token set status='invalid' where token_type='user' and owner_id=$item[user_id] and status='valid'");
 while (1)
 {
 	$new_token = hash_random($username, 'sha256');
@@ -46,6 +46,9 @@ while (1)
 		}
 
 		json_send(array('access_token'=>$new_token,
+                        'app_key'=>END_HUANXIN_APPKEY,
+                        'huanxin_id'=>$item['huanxin_id'],
+                        'huanxin_password'=>$item['huanxin_password'],
 						'expires_in'=>0
 						));		
 	}

@@ -36,12 +36,7 @@ if($data_receive['pic_data'])
 	$data_insert_question ['picture'] = json_encode($data_receive['pic_data']);
 };
 
-if($data_receive['voice_data'])
-{
-	$data_insert_question ['voice_length'] =  (int)$data_receive['voice_length'];
-	$data_insert_question ['voice'] =  json_encode($data_receive['voice_data']);
-};
-
+$now_time = time();
 //关于此问题有关车的类型
 $data_insert_question['brand'] = (int)$data['brand'];
 $data_insert_question['model'] = (int)$data['model'];
@@ -53,48 +48,85 @@ $data_insert_question ['reward'] = $data['reward'] ;
 $data_insert_question ['view_count'] = 0 ;
 $data_insert_question ['is_soluted'] = 0;
 $data_insert_question ['is_accept'] =  0;
-$data_insert_question ['create_time'] =  time();
+$data_insert_question ['create_time'] = $now_time ;
 $data_insert_question ['q_type_firstclass'] =  $data['q_type_firstclass'] ;
 $data_insert_question ['q_type_secondclass'] =  $data['q_type_secondclass'] ;
 
-if ($data['type'] == 0)
-{
-	$data_insert_question['quick_count'] = $data['quickcount'] ;
-}
 
 $now_time_range = $now_time - 60;
 $question_item = model('mechanic_question')->set($data_insert_question,array('driver_user_id'=>$token['owner_id'],'text'=>$data_receive['text'],'where'=>"create_time > $now_time_range"));
-
-
 if(!$question_item)
 {
 	die_json_msg('question表增加失败', 10101);
 }
 
-json_send(array(
-	'q_id'=>$question_item 
-	));
+if ($data['type'] == 0)
+{
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+    //   match  with   workbrand  to question's  brand  //and a.status = 'online'        以后处理
+    $select_mechanic_items = "select a.avatar, a.user_id ,a.huanxin_id ,b.name ,b.workbrand from end_mechanic_user as a  INNER JOIN end_mechanic_joininfo as b using(joininfo_id) where a.role = 'mechanic'  and b.workbrand = {$data['brand']} ";
+    $mechainc_items = model('mechanic_user')->get_list(array('_custom_sql'=>$select_mechanic_items));
+
+    if(!$mechainc_items){
+        die_json_msg('无技师上线', 10101);
+    }
+
+    $return_count = count($mechainc_items);
+   while($mechainc_items)
+    {
+    //此处添加技师筛选程序
+    $seletc_mechanic_id = mt_rand(0,count($mechainc_items)-1);
+
+    //技师  和  车友存在未完成免费图文咨询
+     $find_pro_question_sql = "select q_id from end_mechanic_question where q_status = 0 and q_id in (select q_id from end_mechanic_driver_mechanic_question where q_type = 0 and mechanic_id = {$mechainc_items[$seletc_mechanic_id]['user_id']} and  driver_id = {$token['owner_id']})";
+     $question_id  = model('mechanic_question')->get_list(array('_custom_sql'=>$find_pro_question_sql));
+     if($question_id){
+         unset($mechainc_items[$seletc_mechanic_id]);
+         sort($mechainc_items);
+         continue;
+     }
+
+    $professional_field_sql = "select field_name from end_mechanic_field where id in(select field_id from end_mechanic_professional_field where mechanic_id = {$mechainc_items[$seletc_mechanic_id]['user_id']})";
+    $professional_field_items = model('mechanic_professional_field')->get_list(array('_custom_sql'=>$professional_field_sql));
+    if($professional_field_items === null){
+        die_json_msg('professional_field表查询失败', 10101);
+    }
+    $professional_field = array();
+    foreach ($professional_field_items as $key => $select_mechanic_id)
+        {
+            $professional_field[] = $select_mechanic_id['field_name'];
+
+        }
+     $is_favorite_item = model('mechanic_favorite')->get_one(array('driver_user_id'=>$token['owner_id'],'mechanic_user_id'=>$mechainc_items[$seletc_mechanic_id]['user_id']));
+     $is_favorite = 0;
+     if($is_favorite_item){
+         $is_favorite = 1;
+     }
+     $send_data =array(
+        'mechanic_id'=>(int)$mechainc_items[$seletc_mechanic_id]['user_id'],
+        'huanxin_id'=>$mechainc_items[$seletc_mechanic_id]['huanxin_id'],
+        'avatar'=>$mechainc_items[$seletc_mechanic_id]['avatar'],
+        'name'=>$mechainc_items[$seletc_mechanic_id]['name'],
+        'q_id'=>(int)$question_item,
+        'is_favourite'=>$is_favorite,
+        'professional_field'=>$professional_field
+    );
+
+    $data_insert_raletion = array('mechanic_id'=>$mechainc_items[$seletc_mechanic_id]['user_id'],'driver_id'=>$token['owner_id'],'q_id'=>$question_item,'q_type'=>0,'status'=>0,'createtime'=>$now_time);
+    $relation =  model('mechanic_driver_mechanic_question')->set($data_insert_raletion,array('mechanic_id'=>$mechainc_items[$seletc_mechanic_id]['user_id'],'driver_id'=>$token['owner_id'],'q_id'=>$question_item));
+   if(!$relation){
+       die_json_msg('关系表增加失败', 10101);
+   }
+    json_send($send_data);
+
+  }
+    if(count($send_data) == 0){
+        json_send("还有答案没有评价",10101);
+    }
+
+}
+
+json_send("参数错误",10010);
+
 	
 	

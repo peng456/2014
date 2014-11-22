@@ -13,7 +13,7 @@ if (!isset($data['type'])||!isset($data['parent']))
 	die_json_msg('参数错误', 10100);
 }
 
-if(!in_array($data['type'],array('brand','series','model','q_type'))){
+if(!in_array($data['type'],array('brand','series','model','q_type','field'))){
     die_json_msg('参数错误', 10100);
 }
 
@@ -65,4 +65,15 @@ switch ($data['type']) {
 		}
 		json_send(array('count'=>(int)$count,'data'=>$data)) ;
 		break;
+    case 'field':
+        $model_data = model('mechanic_field')->get_list() ;
+        $count = 0 ;
+        $data = array() ;
+        foreach ($model_data as $key => $value)
+        {
+            $count++ ;
+            $data[] = array('id'=>(int)$value['id'],'content'=>$value['field_name']) ;
+        }
+        json_send(array('count'=>(int)$count,'data'=>$data)) ;
+        break;
 }

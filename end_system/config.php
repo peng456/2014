@@ -66,8 +66,8 @@ else										#部署服务器数据库
 {
 	$mysql = array(
 		'username' => "root", //数据库用户名
-		'password' => "root", //密码
-		'server' => "localhost", //数据库服务器地址，绝大部分是 localhost
+		'password' => "zhuosi_2014", //密码
+		'server' => "104.200.25.32", //数据库服务器地址，绝大部分是 localhost
 		'database' => "mechanic", //网站数据表所在的数据库名称 (一个数据库服务器有多个数据库)
 	);
 }
@@ -79,6 +79,19 @@ define('END_API_DIR',END_MODULE_DIR.'api/'); ## api directory
 define('END_MODEL_DIR',END_ROOT.'end_'.END_MODULE.'/model/');
 define('END_PLUGIN_DIR',END_ROOT.'end_'.END_MODULE.'/plugin/');
 define('END_THEME_DIR',END_ROOT.'end_'.END_MODULE.'/view/');
+
+
+
+//定义一些可变参数：有关七牛、环信等信息。例如：用户名、appkey等。
+
+define('END_QINIU_QZONE','mechanic');
+
+define('END_HUANXIN_ORG_NAME','mechanic');
+define('END_HUANXIN_APP_NAME','mechanic');
+define('END_HUANXIN_APPKEY','mechanic#mechanic');
+define('END_HUANXIN_CLIENT_ID','YXA6_9J0QGPPEeSQf-lSIoaBcA');
+define('END_HUANXIN_CLIENT_SECRET','YXA6PG8db8yZbE7W4kPoX1naEnauiEs');
+
 
 $end_extension = array();
 $end_module = array();

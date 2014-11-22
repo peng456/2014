@@ -30,6 +30,7 @@ $answer_times  = model('mechanic_answer')->get_list(array('mechanic_user_id'=>$a
 $judgescore_item = model('mechanic_judgescore')->get_one(array('a_id'=>$data['a_id']));
 $judgescore_avg = ((float)$judgescore_item['resolution']+(float)$judgescore_item['response_time']+(float)$judgescore_item['attitude'])/3;
 
+
 $data_send = array();
 
 $data_send['id'] = (int)$user_item['user_id'];
@@ -56,40 +57,49 @@ $data_send['is_repair'] = (int)$answer_item['is_repair'];
 $data_send['pay_amount'] = (int)$answer_item['pay_amount'];
 
 
-$comment_items = model('mechanic_comment')->get_list(array('a_id'=>$data['a_id']));
-$comment_items_count = count($comment_items);
-$data_send['comment_count'] = $comment_items_count;
 
-$comments = array();
-for($i = 0;$i<$comment_items_count;$i++)
-{
-    $comments[$i]['id'] = $comment_items[$i]['mechanic_user_id'];
-    $user_item = model('mechanic_user')->get_one($comment_items[$i]['mechanic_user_id']);
-    $joininfo_item = model('mechanic_joininfo')->get_one($user_item['joininfo_id']);
-
-    $comments[$i]['name']     =  (string)$joininfo_item['name'];
-    $comments[$i]['avatar']   =  (string)$user_item['avatar'];
-    $comments[$i]['content']  =  (string)$comment_items[$i]['content'];
-}
-
-$data_send['comment'] = $comments;
+//$comment_items = model('mechanic_comment')->get_list(array('a_id'=>$data['a_id']));
+//$comment_items_count = count($comment_items);
+//$data_send['comment_count'] = $comment_items_count;
+//
+//$comments = array();
+//for($i = 0;$i<$comment_items_count;$i++)
+//{
+//    $comments[$i]['id'] = $comment_items[$i]['mechanic_user_id'];
+//    $user_item = model('mechanic_user')->get_one($comment_items[$i]['mechanic_user_id']);
+//    $joininfo_item = model('mechanic_joininfo')->get_one($user_item['joininfo_id']);
+//
+//    $comments[$i]['name']     =  (string)$joininfo_item['name'];
+//    $comments[$i]['avatar']   =  (string)$user_item['avatar'];
+//    $comments[$i]['content']  =  (string)$comment_items[$i]['content'];
+//}
+//
+//$data_send['comment'] = $comments;
 
 $view_answer = model('mechanic_answerview')->add(array('a_id'=>$data['a_id'],'user_id'=>$token['owner_id']));
 if(!$view_answer){
     die_json_msg('answerview表增加失败',10101);
 }
 //更改question状态
-$q_data = model('mechanic_question')->get_one(array('q_id'=>$answer_item['q_id'])) ;
+$user_role_item = model('mechanic_user')->get_one($token['owner_id']);
+if($user_role_item['role'] != "mechanic"){
 
-if (!$q_data)
+    $q_data = model('mechanic_question')->get_one(array('q_id'=>$answer_item['q_id'])) ;
+
+    if (!$q_data){
         die_json_msg('question表获取信息失败',10101);
-
-if ($q_data['q_status'] == 4)
-{
-    $res = model('mechanic_question')->update($answer_item['q_id'],array('q_status'=>5 )) ;
-    if (!$res)
-        die_json_msg('question表更新q_status失败',10101);
+    }
+    if ($q_data['q_status'] == 4)
+    {
+        $res = model('mechanic_question')->update($answer_item['q_id'],array('q_status'=>5 )) ;
+        if (!$res)
+            die_json_msg('question表更新q_status失败',10101);
+    }
 }
+
+$question_item = model('mechanic_question')->get_one($answer_item['q_id']);
+
+$data_send['q_status'] = (int)$question_item['q_status'];    //q_status = 5  :车友查看未评论  车友根据此决定是否评论；  q_status = 6 车友已经评论
 
 
 json_send($data_send);

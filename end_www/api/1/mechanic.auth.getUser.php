@@ -154,6 +154,23 @@ if ($data['role'] == "mechanic"){             //技工用户
         $joininfo_update_data['resume'] = $data['resume'];
     }
 
+    $array = array('client_id'=>END_HUANXIN_CLIENT_ID,'client_secret'=>END_HUANXIN_CLIENT_SECRET,'org_name'=>END_HUANXIN_ORG_NAME,'app_name'=>END_HUANXIN_APP_NAME);
+
+    $register = new Easemob($array);
+
+    $user_id =  end_encode($data['phone']);
+    $user_password =  end_encode($data['password']);
+
+
+    $huanxin_user = array('user'=>$user_id,'password'=>$user_password);
+
+    $reg_user =  $register->accreditRegister($huanxin_user);
+
+    if(!$reg_user['error']){
+        die_json_msg('环信用户增加失败', 10101);
+    }
+    $user_insert_data['huanxin_id'] = $user_id ;
+    $user_insert_data['huanxin_password'] = $user_password;
 
     //添加 用户
     $item_mechanic_user = model('mechanic_user')->add($user_insert_data);
@@ -162,7 +179,40 @@ if ($data['role'] == "mechanic"){             //技工用户
         die_json_msg('user表增加失败', 10101);
     }
 
-    //添加 技工的信息
+ //添加专注车型
+    if(isset($data['professional_brand'])){
+        $professional_brand = explode(",", $data['professional_brand']);
+        $professional_brand_sql = "insert into end_mechanic_professional_brand(mechanic_id,brand_id,createtime) values";
+        $str_arraay = array();
+
+        foreach($professional_brand as $key => $val)
+        {
+            $str_arraay[$key] ="(".$item_mechanic_user.",".$val.",".$time.")";
+        }
+        $sql = $professional_brand_sql.implode(",",$str_arraay);
+        $professional_brand_items =  $db->query($sql);
+        if(!$professional_brand_items){
+            die_json_msg('professional_brand表增加失败', 10101);
+        }
+    }
+
+//添加擅长领域
+    if(isset($data['professional_field'])){
+        $professional_field = explode(",", $data['professional_field']);
+        $professional_field_sql = "insert into end_mechanic_professional_field(mechanic_id,field_id,createtime) values";
+        $str_arraay = array();
+        foreach($professional_field as $key => $val)
+        {
+            $str_arraay[$key] ="(".$item_mechanic_user.",".$val.",".$time.")";
+        }
+        $sql = $professional_field_sql.implode(",",$str_arraay);
+        $professional_field_items =  $db->query($sql);
+        if(!$professional_field_items){
+            die_json_msg('professional_field表增加失败', 10101);
+        }
+    }
+
+  //添加 技工的信息
     $item_mechanic_joininfo = model('mechanic_joininfo')->update($joininfo_id,$joininfo_update_data);
     if (!$item_mechanic_joininfo)
     {
@@ -200,6 +250,23 @@ if ($data['role'] == "mechanic"){             //技工用户
 
 
 }else{                                           //普通用户
+
+
+    $array = array('client_id'=>END_HUANXIN_CLIENT_ID,'client_secret'=>END_HUANXIN_CLIENT_SECRET,'org_name'=>END_HUANXIN_ORG_NAME,'app_name'=>END_HUANXIN_APP_NAME);
+    $register = new Easemob($array);
+
+    $user_id =  end_encode($data['phone']);
+    $user_password =  end_encode($data['password']);
+    $huanxin_user = array('username'=>$user_id,'password'=>$user_password);
+    $reg_user =  $register->accreditRegister($huanxin_user);
+
+    if($reg_user['error']){
+        die_json_msg('环信用户增加失败', 10101);
+    }
+    $user_insert_data['huanxin_id'] = $user_id ;
+    $user_insert_data['huanxin_password'] = $user_password;
+
+
     //添加 用户
     $item_mechanic_user = model('mechanic_user')->add($user_insert_data);
     if (!$item_mechanic_user)
