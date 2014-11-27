@@ -26,9 +26,9 @@ if(!$selected_mechanic)
 
 foreach ($selected_mechanic['selected_mechanic'] as $key => $value) 
 {
-	$res = model('mechanic_question_mechanic')->set(array('q_id'=>$data['q_id'],'mechanic_user_id'=>$value,'status'=>0,'create_time'=>time()),array('q_id'=>$data['q_id'],'mechanic_user_id'=>$value));
+	$res = model('mechanic_driver_mechanic_question')->set(array('q_id'=>$data['q_id'],'mechanic_id'=>$value,'driver_id'=>$driver_user_id,'createtime'=>time()),array('q_id'=>$data['q_id']));
 	if(!$res)
-		die_json_msg('question_mechanic表更新失败',10101) ;
+		die_json_msg('mechanic_driver_mechanic_question表更新失败',10101) ;
 }
 
 $res = model('mechanic_question')->update($data['q_id'],array('is_accept'=>1)) ;
@@ -39,9 +39,9 @@ if(!$res)
 $q_data = model('mechanic_question')->get_one(array('q_id'=>$data['q_id'])) ;
 if (!$q_data)
         die_json_msg('question表获取信息失败',10101);
-if ($q_data['q_status'] == 2)
+if ($q_data['q_status'] == 1)
 {
-	$res = model('mechanic_question')->update($data['q_id'],array('q_status'=>3 )) ;
+	$res = model('mechanic_question')->update($data['q_id'],array('q_status'=>2 )) ;
 	if (!$res)
     	die_json_msg('question表更新q_status失败',10101);
 }

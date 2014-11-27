@@ -29,4 +29,10 @@ if($accept)
 {
     $status = 1;
 }
+if ($status == 1 && $data['status'] == 0)
+{
+	$res = model('mechanic_question')->update($data['q_id'],array('q_status'=>1 )) ;
+	if (!$res)
+    	die_json_msg('question表更新q_status失败',10101);
+}
 json_send(array('view_count'=>(int)$q_data['view_count'],'status'=>$status) ) ;
