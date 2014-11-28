@@ -1,9 +1,9 @@
 <?php
 /**
- * 获取收藏技师列表，没有则返回推荐技师
+ * 获取推荐技师
  * API 2.1
  *
- * @author duyifan	2014.10.18
+ * @author zhanglipeng	2014.10.18
  */
  
 $data = $_POST;

@@ -74,6 +74,7 @@ switch ($data['type']) {
             $count++ ;
             $data[] = array('id'=>(int)$value['id'],'content'=>$value['field_name']) ;
         }
+
         json_send(array('count'=>(int)$count,'data'=>$data)) ;
         break;
 }

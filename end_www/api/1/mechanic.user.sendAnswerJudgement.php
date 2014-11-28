@@ -3,7 +3,7 @@
  * 提交回答评价
  * API 2.8
  *
- * @author liudanking	2013.08.09
+ * @author zhanglipeng 	2014.11.27  change
  */
  
 $data = $_POST;
@@ -20,6 +20,11 @@ $token = model('mechanic_token')->get_one(array('token_type'=>'user',
 if (!$token)
 {
     die_json_msg('access_token不可用', 10600);
+}
+
+$question_item = model('mechanic_question')->get_one($data['q_id']);
+if($question_item['q_status'] == 3){
+    die_json_msg('问题已经评价', 20800);
 }
 
 $data_judge_insert = array();
@@ -81,7 +86,7 @@ if ($data_judge_insert['total_score'] >= 4)
     $answer_count =  model('mechanic_answer')->get_one(array('_custom_sql'=>"select count(*) as answer_count from end_mechanic_judgescore where mechanic_id = {$data_judge_insert['mechanic_id']}"));
     $a = (float)$good_count['good_count'];
     $b = (float)$answer_count['answer_count'];
-    $repution = (round(($a/$b),2))*100;   var_dump($repution);
+    $repution = (round(($a/$b),2))*100;
     $joininfo_sql =  "update end_mechanic_joininfo set  reputation =  {$repution} where joininfo_id = (select joininfo_id from end_mechanic_user where user_id = {$data_judge_insert['mechanic_id']}) ";
     $repution_set = $db->query($joininfo_sql);
     if(!$repution_set)
@@ -91,10 +96,10 @@ if ($data_judge_insert['total_score'] >= 4)
 }
 
 
-$question_item = model('mechanic_question')->get_one($data['q_id']);
+//$question_item = model('mechanic_question')->get_one($data['q_id']);
 
 if($question_item['q_status'] != 2){
-    $chat_group_update = model('mechanic_chat_group')->set(array('q_end_time'=>$data['q_end_time']),$data['q_id']);
+    $chat_group_update = model('mechanic_chat_group')->set(array('q_end_time'=>$data['q_end_time']),array('q_id'=>$data['q_id']));
     if(!$chat_group_update){
         die_json_msg('chat_group表更新失败', 10101);
     }
@@ -104,12 +109,12 @@ if($question_item['q_status'] != 2){
         die_json_msg('环信ID缺失', 10101);
     }
 
-    $chat_group_item = model('mechanic_chat_group')->get_one($data['q_id']);
+    $chat_group_item = model('mechanic_chat_group')->get_one(array('q_id'=>$data['q_id']));
     $array = array('client_id'=>END_HUANXIN_CLIENT_ID,'client_secret'=>END_HUANXIN_CLIENT_SECRET,'org_name'=>END_HUANXIN_ORG_NAME,'app_name'=>END_HUANXIN_APP_NAME);
 
     $ease = new Easemob($array);
 
-    $ql = "select * where (from= '{$huanxin_ids[0]['huanxin_id']}' and to='{$huanxin_ids[1]['huanxin_id']}') or (from= '{$huanxin_ids[1]['huanxin_id']}' and to='{$huanxin_ids[0]['huanxin_id']}') and timestamp > {$chat_group_item['q_start_time']} and timestamp < {$chat_group_item['q_end_time']} order by timestamp desc ";
+    $ql = "select * where (from= '{$huanxin_ids[0]['huanxin_id']}' and to='{$huanxin_ids[1]['huanxin_id']}') or (from= '{$huanxin_ids[1]['huanxin_id']}' and to='{$huanxin_ids[0]['huanxin_id']}') and timestamp < {$chat_group_item['q_end_time']} and timestamp > {$chat_group_item['q_start_time']}  order by timestamp desc ";
 
     $result = $ease->chatRecord(urlencode($ql));
 

@@ -52,7 +52,7 @@ if (!$token)
 
     $ease = new Easemob($array);
 
-    $ql = "select * where (from= '{$huanxin_ids[0]['huanxin_id']}' and to='{$huanxin_ids[1]['huanxin_id']}') or (from= '{$huanxin_ids[1]['huanxin_id']}' and to='{$huanxin_ids[0]['huanxin_id']}') and q_id = 0 and timestamp > {$chat_group_item['q_start_time']} and timestamp < {$chat_group_item['q_end_time']} order by timestamp desc ";
+    $ql = "select * where (from= '{$huanxin_ids[0]['huanxin_id']}' and to='{$huanxin_ids[1]['huanxin_id']}') or (from= '{$huanxin_ids[1]['huanxin_id']}' and to='{$huanxin_ids[0]['huanxin_id']}') and timestamp < {$chat_group_item['q_end_time']} and timestamp > {$chat_group_item['q_start_time']}  order by timestamp desc ";
 
     $result = $ease->chatRecord(urlencode($ql));
 
