@@ -43,10 +43,10 @@ if(isset($data['resolution']))
 
 if(isset($data['response_time']))
 {
-      if(!is_numeric($data['response_time'])){
-          die_json_msg('参数错误', 10100);
-      }
-          $data_judge_insert['response_time'] = (int)$data['response_time'];
+    if(!is_numeric($data['response_time'])){
+        die_json_msg('参数错误', 10100);
+    }
+    $data_judge_insert['response_time'] = (int)$data['response_time'];
 }
 
 if(isset($data['attitude']))
@@ -62,11 +62,57 @@ if(isset($data['comment']))
     $data_judge_insert['comment'] = $data['comment'];
 }
 
+if($question_item['q_status'] < 2){
+    $chat_group_update = model('mechanic_chat_group')->set(array('q_end_time'=>$data['q_end_time']),array('q_id'=>$data['q_id']));
+    if(!$chat_group_update){
+        die_json_msg('chat_group表更新失败', 10101);
+    }
+
+    $huanxin_ids = model('mechanic_user')->get_list(array('select'=>'huanxin_id','where'=>"user_id in ({$token['owner_id']},{$data['mechanic_id']})"));
+    if(count($huanxin_ids)<2){
+        die_json_msg('环信ID缺失', 10101);
+    }
+
+    $chat_group_item = model('mechanic_chat_group')->get_one(array('q_id'=>$data['q_id']));
+    $array = array('client_id'=>END_HUANXIN_CLIENT_ID,'client_secret'=>END_HUANXIN_CLIENT_SECRET,'org_name'=>END_HUANXIN_ORG_NAME,'app_name'=>END_HUANXIN_APP_NAME);
+
+    $ease = new Easemob($array);
+
+    $ql1 = "select * where from= '{$huanxin_ids[0]['huanxin_id']}' and to='{$huanxin_ids[1]['huanxin_id']}' and timestamp < {$chat_group_item['q_end_time']} and timestamp >= {$chat_group_item['q_start_time']}  order by timestamp desc ";
+    $ql2 = "select * where from= '{$huanxin_ids[1]['huanxin_id']}' and to='{$huanxin_ids[0]['huanxin_id']}' and timestamp < {$chat_group_item['q_end_time']} and timestamp >= {$chat_group_item['q_start_time']}  order by timestamp desc ";
+
+    $sleep_count = 0 ;
+    $flag = true;
+    while($flag){
+    $result1 = $ease->chatRecord(urlencode($ql1));
+    $result2 = $ease->chatRecord(urlencode($ql2));
+    $result = array_merge($result1['entities'],$result2['entities']);
+    $rows = ArrayHelper::sortByCol($result, 'timestamp', SORT_DESC);
+    if($rows) {
+            $messages = json_encode($rows);
+            $chat_group_update = model('mechanic_chat_group')->set(array('huanxin_messages'=>$messages),array('q_id'=>$data['q_id']));
+            if(!$chat_group_update){
+                die_json_msg('chat_group表更新失败', 10101);
+            }
+
+        $flag = false;
+        var_dump(count($rows));
+        }
+    elseif($sleep_count > 4){
+            die_json_msg('网络环境不佳，稍后再试', 10101);
+        }
+    else{
+            sleep(1);
+            $sleep_count++;
+        }
+
+    }
+}
+
 if(!model('mechanic_judgescore')->add($data_judge_insert))
 {
     die_json_msg('judgescore表增加失败', 10101);
 }
-
 if ($data_judge_insert['total_score'] >= 4)
 {
     $res = model('mechanic_good')->set(array(
@@ -95,39 +141,9 @@ if ($data_judge_insert['total_score'] >= 4)
     }
 }
 
-
-//$question_item = model('mechanic_question')->get_one($data['q_id']);
-
-if($question_item['q_status'] != 2){
-    $chat_group_update = model('mechanic_chat_group')->set(array('q_end_time'=>$data['q_end_time']),array('q_id'=>$data['q_id']));
-    if(!$chat_group_update){
-        die_json_msg('chat_group表更新失败', 10101);
-    }
-
-    $huanxin_ids = model('mechanic_user')->get_list(array('select'=>'huanxin_id','where'=>"user_id in ({$token['owner_id']},{$data['mechanic_id']})"));
-    if(count($huanxin_ids)<2){
-        die_json_msg('环信ID缺失', 10101);
-    }
-
-    $chat_group_item = model('mechanic_chat_group')->get_one(array('q_id'=>$data['q_id']));
-    $array = array('client_id'=>END_HUANXIN_CLIENT_ID,'client_secret'=>END_HUANXIN_CLIENT_SECRET,'org_name'=>END_HUANXIN_ORG_NAME,'app_name'=>END_HUANXIN_APP_NAME);
-
-    $ease = new Easemob($array);
-
-    $ql = "select * where (from= '{$huanxin_ids[0]['huanxin_id']}' and to='{$huanxin_ids[1]['huanxin_id']}') or (from= '{$huanxin_ids[1]['huanxin_id']}' and to='{$huanxin_ids[0]['huanxin_id']}') and timestamp < {$chat_group_item['q_end_time']} and timestamp > {$chat_group_item['q_start_time']}  order by timestamp desc ";
-
-    $result = $ease->chatRecord(urlencode($ql));
-
-    $messages = json_encode($result['entities']);
-    $chat_group_update = model('mechanic_chat_group')->set(array('huanxin_messages'=>$messages),array('q_id'=>$data['q_id']));
-    if(!$chat_group_update){
-        die_json_msg('chat_group表更新失败', 10101);
-    }
-}
-
 $question_update = model('mechanic_question')->set(array('q_status'=>3),$data['q_id']);
 if(!$question_update){
-    die_json_msg('question表更新失败', 10101);
-}
+        die_json_msg('question表更新失败', 10101);
+    }
 
-json_send();
+  json_send();

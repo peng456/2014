@@ -22,7 +22,7 @@ if($data['type'] == 0){
 
 
 $question_sql = "select question.* from  end_mechanic_question as question inner join end_mechanic_chat_group as chat_group using(q_id) where question.driver_user_id = {$item['owner_id']}  and question.q_status >= 2 and (question.type = 0 or question.type = 1) order by chat_group.q_end_time desc limit {$data['from']},10";
-var_dump($question_sql);die();
+
 $question_items = model('mechanic_question')->get_list(array('_custom_sql'=>$question_sql));
 
 $data_send = array();

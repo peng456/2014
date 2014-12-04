@@ -89,16 +89,19 @@ if (!$workcity || !$workbrand ){
     }
  $select_comment_sql = "select * from end_mechanic_judgescore where mechanic_id = {$data['mechanic_id']} order by create_time desc ";
  $comment_item = model('mechanic_judgescore')->get_one(array('_custom_sql'=>$select_comment_sql));
- $driver_item  = model('mechanic_user')->get_one(array('user_id' => $comment_item['driver_user_id']));
- $question_item  = model('mechanic_question')->get_one(array('q_id' => $comment_item['q_id']));
+ if($comment_item){
+       $driver_item  = model('mechanic_user')->get_one(array('user_id' => $comment_item['driver_user_id']));
+       $question_item  = model('mechanic_question')->get_one(array('q_id' => $comment_item['q_id']));
 
- $comment = array(
-     'driver_id'=>(int)$driver_item['user_id'],
-     'nickname'=>(string)$driver_item['nickname'],
-     'total_score'=>(int)$comment_item['total_score'],
-     'driver_comment'=>(string)$comment_item['comment'],
-     'question_text'=>(string)$question_item['text']
-      );
+       $comment = array(
+            'driver_id'=>(int)$driver_item['user_id'],
+            'nickname'=>(string)$driver_item['nickname'],
+            'total_score'=>(int)$comment_item['total_score'],
+            'driver_comment'=>(string)$comment_item['comment'],
+            'question_text'=>(string)$question_item['text']
+            );
+     }
+
     $data = array(
 		'mechanic_id'=>(int)$userdata['user_id'],
 		'name'=>(string)$joininfo['name'],

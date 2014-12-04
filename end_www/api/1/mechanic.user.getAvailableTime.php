@@ -26,18 +26,24 @@ $availble_time_week = model('mechanic_period')->get_one(array('select'=>$week.",
 if($period['is_readholiday'] == 0)     //不提供
 {
     if(isholiday($data['time'])){
-        json_send();
+        json_send(array("0","0","0","0","0","0","0","0",
+                         "0","0","0","0","0","0","0","0",
+                         "0","0","0","0","0","0","0","0",
+                         "0","0","0","0","0","0","0","0",
+                         "0","0","0","0","0","0","0","0",
+                         "0","0","0","0","0","0","0","0"));
     }
 }
 
 //不可用时间
-$date =  (int) ($data['time']/86400);;
-$inavailble_time    = model('mechanic_period_record')->get_list(array('select'=>'time_period','mechanic_id'=>$data['mechanic_id'],'date'=>$date,'status'=>1));
+$date =  (int) ($data['time']/86400);
+$time = time();
+$inavailble_time    = model('mechanic_period_record')->get_list(array('select'=>'time_period','mechanic_id'=>$data['mechanic_id'],'date'=>$date,'where'=>"status = 1 or  deadline > $time"));
 
 //可用时间   $availble_time  =  $availble_time_week -$inavailble_time
 $temp = json_decode($availble_time_week["$week"]);
 foreach($inavailble_time as $key=>$value){
-    $temp[$value['time_period']] = 1;
+    $temp[$value['time_period']] = "0";
 }
 
 json_send($temp);

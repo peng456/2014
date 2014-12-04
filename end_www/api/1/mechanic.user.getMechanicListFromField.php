@@ -31,7 +31,7 @@ if (!$item){
     foreach ($select_mechanic_id_items as $key =>$select_mechanic_id)
     {
         //获取技师基本信息
-        $select_mechanic_sql = "select mechanic.user_id , mechanic.avatar,joininfo.name,joininfo.stars,,joininfo.technical_title,joininfo.workbrand ,joininfo.reputation from end_mechanic_user as mechanic inner join end_mechanic_joininfo as joininfo using(joininfo_id) where mechanic.user_id = {$select_mechanic_id['mechanic_id']}";
+        $select_mechanic_sql = "select mechanic.user_id , mechanic.avatar,joininfo.name,joininfo.stars,joininfo.technical_title,joininfo.workbrand ,joininfo.reputation from end_mechanic_user as mechanic inner join end_mechanic_joininfo as joininfo using(joininfo_id) where mechanic.user_id = {$select_mechanic_id['mechanic_id']}";
         $mechanic_item = model('mechanic_user')->get_one(array('_custom_sql'=>$select_mechanic_sql));
         if(!$mechanic_item )  continue;
         //获取 技师 擅长领域
@@ -61,7 +61,7 @@ if (!$item){
         $workbrand = model('mechanic_car_brand')->get_one(array('car_brand_id'=>$mechanic_item['workbrand'])) ;
 
         $data_send[] = array(
-            'id'=>(int)$mechanic_item['usr_id'],
+            'id'=>(int)$mechanic_item['user_id'],
             'avatar'=>$mechanic_item['avatar'],
             'name'=>$mechanic_item['name'],
             'stars'=>(int)$mechanic_item['stars'],
@@ -81,6 +81,7 @@ if (!$item){
      $select_mechanic_sql = "select mechanic.user_id , mechanic.avatar,joininfo.name,joininfo.stars,joininfo.technical_title,joininfo.workbrand ,joininfo.reputation from end_mechanic_user as mechanic inner join end_mechanic_joininfo as joininfo using(joininfo_id) where mechanic.role = 'mechanic' limit {$data['from']},10";
      $mechanic_items = model('mechanic_user')->get_list(array('_custom_sql'=>$select_mechanic_sql));
      $data_send = array();
+     $count_mechanic = 0;
      foreach ($mechanic_items as $key =>$select_mechanic_id)
      {
 

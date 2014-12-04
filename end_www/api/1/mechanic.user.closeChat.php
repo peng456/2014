@@ -31,12 +31,7 @@ if (!$token)
     if(($question_item['q_status'] == 3) || ($question_item['q_status'] == 2)){
          json_send();
     }
-    $update_sql = "update end_mechanic_question set q_status = 2 where q_id = {$data['q_id']}";
-    $question_update = model('mechanic_question')->update($data['q_id'],array('q_status'=>2));
 
-    if(!$question_update){
-        die_json_msg('question表更新失败', 10101);
-    }
    $update_chat_group_sql = "update end_mechanic_chat_group set q_end_time = {$data['q_end_time']} where q_id = {$data['q_id']}";
    $chat_group_update = $db->query($update_chat_group_sql);
     if(!$chat_group_update){
@@ -52,13 +47,35 @@ if (!$token)
 
     $ease = new Easemob($array);
 
-    $ql = "select * where (from= '{$huanxin_ids[0]['huanxin_id']}' and to='{$huanxin_ids[1]['huanxin_id']}') or (from= '{$huanxin_ids[1]['huanxin_id']}' and to='{$huanxin_ids[0]['huanxin_id']}') and timestamp < {$chat_group_item['q_end_time']} and timestamp > {$chat_group_item['q_start_time']}  order by timestamp desc ";
+    $ql1 = "select * where from= '{$huanxin_ids[0]['huanxin_id']}' and to='{$huanxin_ids[1]['huanxin_id']}' and timestamp < {$chat_group_item['q_end_time']} and timestamp >= {$chat_group_item['q_start_time']}  order by timestamp desc ";
+    $ql2 = "select * where from= '{$huanxin_ids[1]['huanxin_id']}' and to='{$huanxin_ids[0]['huanxin_id']}' and timestamp < {$chat_group_item['q_end_time']} and timestamp >= {$chat_group_item['q_start_time']}  order by timestamp desc ";
 
-    $result = $ease->chatRecord(urlencode($ql));
+$sleep_count = 0 ;
+while(1){
 
-    $messages = json_encode($result['entities']);
+    $result1 = $ease->chatRecord(urlencode($ql1));
+    $result2 = $ease->chatRecord(urlencode($ql2));
+    $result = array_merge($result1['entities'],$result2['entities']);
+    $rows = ArrayHelper::sortByCol($result, 'timestamp',SORT_DESC);
+    if($rows) {
+    $messages = json_encode($rows);
     $chat_group_update = model('mechanic_chat_group')->set(array('huanxin_messages'=>$messages),array('q_id'=>$data['q_id']));
     if(!$chat_group_update){
         die_json_msg('chat_group表更新失败', 10101);
     }
+    //更改question   的 q_status
+    $update_sql = "update end_mechanic_question set q_status = 2 where q_id = {$data['q_id']}";
+    $question_update = model('mechanic_question')->update($data['q_id'],array('q_status'=>2));
+    if(!$question_update){
+         die_json_msg('question表更新失败', 10101);
+        }
+
     json_send();
+    }
+    elseif($sleep_count > 4){
+        die_json_msg('网络环境不佳，稍后再试', 10101);
+    }else{
+        sleep(1);
+        $sleep_count++;
+    }
+}

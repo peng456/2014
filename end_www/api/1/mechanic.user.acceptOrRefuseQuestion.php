@@ -20,17 +20,18 @@ $token = model('mechanic_token')->get_one(array('token_type'=>'user',
 if (!$token)
 {
     die_json_msg('access_token不可用', 10600);
+
 }
 
 if($data['type'] == 0 ){         //接受  车友提问
-    $question_update = model('mechanic_question')->set($data['q_id'],array('q_status'=>1));
+    $question_update = model('mechanic_question')->update($data['q_id'],array('q_status'=>1));
     if(!$question_update){
         die_json_msg('question更新失败', 10101);
     }
     json_send();
 
 }else{     //拒绝  车友提问
-    $question_update = model('mechanic_question')->set($data['q_id'],array('q_status'=>4));
+    $question_update = model('mechanic_question')->update($data['q_id'],array('q_status'=>4));
     if(!$question_update){
         die_json_msg('question更新失败', 10101);
     }

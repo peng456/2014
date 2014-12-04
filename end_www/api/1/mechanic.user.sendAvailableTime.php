@@ -20,7 +20,8 @@ if (!$token)
     die_json_msg('access_token不可用', 10600);
 }
 $date = (int)($data['time']/86400);
-$period_item =model('mechanic_period_record')->get_one(array('mechanic_id'=>$data['mechanic_id'],'date'=>$date,'time_period'=>$data['time_period'],'status'=>1));
+$time = (int)time();
+$period_item =model('mechanic_period_record')->get_one(array('mechanic_id'=>$data['mechanic_id'],'date'=>$date,'time_period'=>$data['time_period'],'where'=>"($time < deadline or status = 1) and driver_id != {$token['owner_id']}"));
 if($period_item){
     die_json_msg('此时间段已被预约', 10100);
 }
@@ -30,13 +31,14 @@ $data_insert['mechanic_id']  =  $data['mechanic_id'];
 $data_insert['driver_id']  =  $token['owner_id'];
 $data_insert['date']  = $date ;
 $data_insert['time_period']  =  $data['time_period'];
-$data_insert['status']   =  1;
-$data_insert['create_time']  =  time();
+$data_insert['status']   =  0;
+$data_insert['deadline']   =  $time + 600;
+$data_insert['create_time']  =  $time;
 
-$period_record_item  = model('mechanic_period_record')->add($data_insert,array('mechanic_id'=>$data['mechanic_id'],'date'=>$data['date'],'time_period'=>$data['time_period']));
+$period_record_item  = model('mechanic_period_record')->set($data_insert,array('mechanic_id'=>$data['mechanic_id'],'driver_id'=>$token['owner_id'],'date'=>$date,'time_period'=>$data['time_period']));
 
 if(!$period_record_item){
         die_json_msg('period_record表添加失败', 10101);
     }
 
-json_send();
+json_send(array('time_id'=>(int)$period_record_item));

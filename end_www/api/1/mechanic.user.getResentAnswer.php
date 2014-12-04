@@ -64,4 +64,46 @@ foreach ($question_items as $key => $value)
 }
 json_send(array('count'=>(int)$count,'data'=>$data_send) ) ;
 }
+
+
+if($data['type'] == 1){
+    $question_sql = "select question.* from end_mechanic_question as question inner join  end_mechanic_driver_mechanic_question as d_m_q using(q_id)   where d_m_q.mechanic_id  = {$mechanic_user_id} and (question.type = 2 or question.type = 3) order by question.create_time DESC limit {$from},10";
+
+    $question_items = model('mechanic_question')->get_list(array('_custom_sql'=>$question_sql));
+
+    foreach ($question_items as $key => $value)
+    {
+        $driver_item = model('mechanic_user')->get_one($value['driver_user_id']);
+        if(!$driver_item)continue;
+        $pictures = json_decode($value['picture']) ;
+        $q_type_firstclass  = model('mechanic_question_type_first')->get_one($value['q_type_firstclass']);
+        $q_type_secondclass = model('mechanic_question_type')->get_one($value['q_type_secondclass']);
+
+        $brand_item  =  model('mechanic_car_brand')->get_one($value['brand']);
+        $model_item  =  model('mechanic_car_model')->get_one($value['model']);
+        $series_item =  model('mechanic_car_series')->get_one($value['series']);
+
+        $data_send[] = array(
+            'driver_user_id'=>(int)$driver_item['user_id'] ,
+            'huanxin_id'=>(string)$driver_item['huanxin_id'],
+            'driver_avatar'=>(string)$driver_item['avatar'] ,
+            'nickname'=>(string)$driver_item['nickname'] ,
+            'q_id'=>(int)$value['q_id'] ,
+            'type'=>(int)$value['type'] ,
+            'q_type_firstclass'=>(string)$q_type_firstclass['content'],
+            'q_type_secondclass'=>(string)$q_type_secondclass['content'],
+            'text'=>(string)$value['text'] ,
+            'pic_data'=>$pictures ,
+            'car_brand'=>(string)$brand_item['brand_name'] ,
+            'car_brand_avatar'=>(string)$brand_item['brand_avatar'],
+            'car_series'=>(string)$series_item['series'],
+            'car_model'=>(string)$model_item['car_model_name'],
+            'car_years'=>(int)$value['year'],
+            'q_status'=>(int)$value['q_status'],
+            'time'=>(int)$value['create_time']
+        ) ;
+        $count++;
+    }
+    json_send(array('count'=>(int)$count,'data'=>$data_send) ) ;
+}
 die_json_msg('type参数错误', 10100);
