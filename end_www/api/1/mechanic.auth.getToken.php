@@ -45,11 +45,32 @@ while (1)
 			die_json_msg('token表更新失败', 10101);
 		}
 
+        //if($item['role'] == "driver"){
 		json_send(array('access_token'=>$new_token,
                         'app_key'=>END_HUANXIN_APPKEY,
                         'huanxin_id'=>$item['huanxin_id'],
                         'huanxin_password'=>$item['huanxin_password'],
+                        'nickname'=>$item['nickname'],
+                        'avatar'=>$item['avatar'],
+                        'firstname'=>$item['firstname'],
+                        'lastname'=>$item['lastname'],
+                        'sex'=>$item['sex'],
+                        'years'=>round((float)((time()-$item['years'])/31536000),1),
 						'expires_in'=>0
-						));		
+						));
+//        }
+//        else{
+//            json_send(array('access_token'=>$new_token,
+//                'app_key'=>END_HUANXIN_APPKEY,
+//                'huanxin_id'=>$item['huanxin_id'],
+//                'huanxin_password'=>$item['huanxin_password'],
+//                'avatar'=>$item['avatar'],
+//                'sex'=>$item['sex'],
+//                'years'=>round((float)((time()-$item['years'])/31536000),1),
+//                'huanxin_password'=>$item['huanxin_password'],
+//                'expires_in'=>0
+//            ));
+//        }
+
 	}
 }

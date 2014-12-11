@@ -5,20 +5,32 @@
  *
  * @author zhanglipeng  2014/10/19 23:22
  */
- 
+
 $data = $_POST;
 
-if (!isset($data['access_token']) || !isset($data['type'])|| !isset($data['q_type_firstclass'])|| !isset($data['q_type_secondclass']) || !isset($data['brand']) || !isset($data['model']) || !isset($data['series']) || !isset($data['year']) || !isset($data['msg']))
+if (!isset($data['access_token']) || !isset($data['type'])|| !isset($data['q_type_firstclass'])|| !isset($data['q_type_secondclass']) || !isset($data['brand']) || !isset($data['model']) || !isset($data['series']) || !isset($data['year']) )
 {
     die_json_msg('参数错误', 10100);
+}
+
+if($data['type'] != 3 ){
+    if(!isset($data['msg'])){
+        die_json_msg('参数错误', 10100);
+    }
 }
 
 if($data['type'] == 1){
     if (!isset($data['mechanic_id']) || !is_numeric($data['mechanic_id']) ){
         die_json_msg('参数错误', 10100);
     }
-}if($data['type'] == 2){
+}
+if($data['type'] == 2){
     if (!isset($data['mechanic_id']) || !is_numeric($data['mechanic_id'])|| !is_numeric($data['phonenumber']) || !isset($data['phonenumber'])|| !isset($data['period_record_id']) ){
+        die_json_msg('参数错误', 10100);
+    }
+}
+if($data['type'] == 3 ){
+    if (!is_numeric($data['phonenumber']) || !isset($data['phonenumber'])){
         die_json_msg('参数错误', 10100);
     }
 }
@@ -80,7 +92,7 @@ if ($data['type'] == 0)
     $seletc_mechanic_id = mt_rand(0,count($mechainc_items)-1);
 
     //判断技师和车友 是否 存在 未完成免费、付费图文咨询
-     $find_pro_question_sql = "select q_id from end_mechanic_question where q_status = 0 and q_id in (select q_id from end_mechanic_driver_mechanic_question where q_type in(0,1) and mechanic_id = {$mechainc_items[$seletc_mechanic_id]['user_id']} and  driver_id = {$token['owner_id']})";
+     $find_pro_question_sql = "select q_id from end_mechanic_question where q_status < 2 and q_id in (select q_id from end_mechanic_driver_mechanic_question where q_type in(0,1,2) and mechanic_id = {$mechainc_items[$seletc_mechanic_id]['user_id']} and  driver_id = {$token['owner_id']})";
      $question_id  = model('mechanic_question')->get_list(array('_custom_sql'=>$find_pro_question_sql));
      if($question_id){
          unset($mechainc_items[$seletc_mechanic_id]);
@@ -149,8 +161,8 @@ if($data['type'] == 1 ){   //付费图文咨询
     if(!$mechainc_item){
         die_json_msg('无此技师', 10101);
     }
-    //判断技师和车友 是否 存在 未完成免费、付费图文咨询
-        $find_pro_question_sql = "select q_id from end_mechanic_question where q_status = 0 and q_id in (select q_id from end_mechanic_driver_mechanic_question where q_type in(0,1) and mechanic_id = {$data['mechanic_id']} and  driver_id = {$token['owner_id']})";
+    //判断技师和车友 是否 存在 未完成免费、付费图文咨询、预约电话咨询
+        $find_pro_question_sql = "select q_id from end_mechanic_question where q_status < 2 and q_id in (select q_id from end_mechanic_driver_mechanic_question where q_type in(0,1,2) and mechanic_id = {$data['mechanic_id']} and  driver_id = {$token['owner_id']})";
         $question_id  = model('mechanic_question')->get_list(array('_custom_sql'=>$find_pro_question_sql));
         if($question_id){
             die_json_msg('图文咨询还有未完成', 10101);
@@ -213,6 +225,12 @@ if($data['type'] == 2 ){   //预约电话咨询
     if(!$mechainc_item){
         die_json_msg('无此技师', 10101);
     }
+    //判断技师和车友 是否 存在 未完成免费、付费图文咨询、预约电话咨询
+    $find_pro_question_sql = "select q_id from end_mechanic_question where q_status < 2 and q_id in (select q_id from end_mechanic_driver_mechanic_question where q_type in(0,1,2) and mechanic_id = {$data['mechanic_id']} and  driver_id = {$token['owner_id']})";
+    $question_id  = model('mechanic_question')->get_list(array('_custom_sql'=>$find_pro_question_sql));
+    if($question_id){
+        die_json_msg('图文咨询还有未完成', 10101);
+    }
     $now_time_range = $now_time - 60;
     $question_item = model('mechanic_question')->set($data_insert_question,array('driver_user_id'=>$token['owner_id'],'text'=>$data_receive['text'],'where'=>"create_time > $now_time_range"));
     if(!$question_item)
@@ -262,15 +280,9 @@ if($data['type'] == 3 ){   //快捷电话咨询
 
     $data_insert_question ['phonenumber'] =  $data['phonenumber'] ;
 
-    //   match  with   workbrand  to question's  brand  //and a.status = 'online'        以后处理
-    // $select_mechanic_items = "select a.avatar, a.user_id ,a.huanxin_id ,b.name ,b.workbrand from end_mechanic_user as a  INNER JOIN end_mechanic_joininfo as b using(joininfo_id) where a.user_id = {$data['mechanic_id']} ";
-    $mechainc_item = model('mechanic_user')->get_one($data['mechanic_id']);
 
-    if(!$mechainc_item){
-        die_json_msg('无此技师', 10101);
-    }
     $now_time_range = $now_time - 60;
-    $question_item = model('mechanic_question')->set($data_insert_question,array('driver_user_id'=>$token['owner_id'],'text'=>$data_receive['text'],'where'=>"create_time > $now_time_range"));
+    $question_item = model('mechanic_question')->set($data_insert_question,array('driver_user_id'=>$token['owner_id'],'q_type_firstclass'=>$data['q_type_firstclass'],'q_type_secondclass'=>$data['q_type_secondclass'],'q_status'=>3,'where'=>"create_time > $now_time_range"));
     if(!$question_item)
     {
         die_json_msg('question表增加失败', 10101);
@@ -279,19 +291,70 @@ if($data['type'] == 3 ){   //快捷电话咨询
     if($mechanic_driver_mechanic_question_item){
         die_json_msg('您在一分钟内已经提过此问题', 10101);
     }
+       // 选择合适的技师
+    $select_mechanic = "select user_id,jpush_id from end_mechanic_user where  role = 'mechanic'";
+    $mechanic_ids = model('mechanic_user')->get_list(array('_custom_sql'=>$select_mechanic));
 
-    $data_insert_raletion = array('mechanic_id'=>$mechainc_item['user_id'],'driver_id'=>$token['owner_id'],'q_id'=>$question_item,'q_type'=>3,'status'=>0,'createtime'=>$now_time);
-    $relation =  model('mechanic_driver_mechanic_question')->add($data_insert_raletion);
-    if(!$relation){
-        die_json_msg('关系表增加失败', 10101);
+
+// insert  into table end_mechanic_driver_mechanic_question  : record relation  q_id  and   mechanic_id
+   $time  = time();
+   $insert_relation_sql = "insert into end_mechanic_driver_mechanic_question(mechanic_id,driver_id,q_id,q_type,status,createtime) values";
+   foreach($mechanic_ids as $key => $values){
+       $relation_values[]="({$values['user_id']},{$token['ownner_id']},$question_item,3,0,$time)";
+       }
+   $sql = $insert_relation_sql.implode(',',$relation_values);
+   $insert_relation = $db->query($sql);
+   if(!$insert_relation){
+    die_json_msg('关系表增加失败', 10101);
+       }
+
+//问题 通过  极光推送  到技师端
+    $temp = array();
+   foreach($mechanic_ids as $key=>$value){
+       $temp[]=$value['jpush_id'];
     }
-    json_send();
+   $regis_ids = array('registration_id'=>$temp);
+   $master_secret = '779e8879efb1a54dc855bd30';
+   $app_key='4a215a78faccfed9e5679441';
+   $jpush_temp = new Jpushdemo($app_key,$master_secret);  //$id = "0a0009ff94f";
+   $aa = $jpush_temp->sendMessageById($regis_ids,"快捷电话咨询",array('msg_content'=>112,'title'=>'zhuosi','content_type'=>'','extras'=>'ss'));
+
+   $question_update = model('mechanic_question')->update($question_item,array('view_count'=>count($temp)));
+   if(!$question_update){
+      die_json_msg('question表更新失败', 10101);
+   }
+    json_send(array('q_id'=>$question_item));
 }
-
-
-
 
 json_send("参数错误",10010);
 
 	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

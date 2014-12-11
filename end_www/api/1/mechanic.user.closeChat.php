@@ -75,7 +75,7 @@ while(1){
     elseif($sleep_count > 4){
         die_json_msg('网络环境不佳，稍后再试', 10101);
     }else{
-        sleep(1);
+        sleep(0.2);
         $sleep_count++;
     }
 }

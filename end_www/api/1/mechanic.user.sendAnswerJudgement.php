@@ -94,9 +94,7 @@ if($question_item['q_status'] < 2){
             if(!$chat_group_update){
                 die_json_msg('chat_group表更新失败', 10101);
             }
-
         $flag = false;
-        var_dump(count($rows));
         }
     elseif($sleep_count > 4){
             die_json_msg('网络环境不佳，稍后再试', 10101);

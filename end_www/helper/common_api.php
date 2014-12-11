@@ -320,8 +320,6 @@ class Easemob {
         return $result;
     }
 
-
-
     /**
      * 发送消息
      *
@@ -929,4 +927,70 @@ abstract class ArrayHelper
         return $rowset;
     }
 }
+
+
+require_once $_SERVER['DOCUMENT_ROOT']."/mechanictest/vendor/autoload.php";
+
+use JPush\Model as M;
+use JPush\JPushClient;
+use JPush\JPushLog;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+use JPush\Exception\APIConnectionException;
+use JPush\Exception\APIRequestException;
+
+class Jpushdemo {
+    private  $master_secret;
+    private  $app_key;
+    public  $client;
+
+    public function __construct($app_key,$master_secret) {
+         JPushLog::setLogHandlers(array(new StreamHandler('jpush.log', Logger::DEBUG)));
+         $this->app_key = $app_key;
+         $this->master_secret = $master_secret;
+         $this->client = new JPushClient($app_key,$master_secret);;
+
+     }
+
+      /**
+       * 发送到指定jpusd_ids 指定 相关问题信息
+       *
+       * @param $jpusd_ids 用户极光ID
+       * @param $username 用户名
+       * @param $username 用户名
+       */
+ //   public function sendMessageById($jpusd_ids,$notification,$msg_content) {
+    public function sendMessageById($regis_ids,$notification,$msg_content) {
+        try {
+        $result = $this->client->push()
+                   ->setPlatform(M\all)
+                   ->setAudience($regis_ids)
+             //      ->setMessage($regis_ids)
+                   ->setNotification(M\notification($notification))
+             //      ->setOptions($msg_content)
+                   ->send();
+
+        return $result;
+
+        } catch (APIRequestException $e) {
+            echo 'Push Fail.';
+            echo 'Http Code : ' . $e->httpCode ."  ";
+            echo 'code : ' . $e->code ."  ";
+            echo 'Error Message : ' . $e->message . "  ";
+            echo 'Response JSON : ' . $e->json . "  ";
+            echo 'rateLimitLimit : ' . $e->rateLimitLimit . "  ";
+            echo 'rateLimitRemaining : ' . $e->rateLimitRemaining . "  ";
+            echo 'rateLimitReset : ' . $e->rateLimitReset . "  ";
+        } catch (APIConnectionException $e) {
+            echo 'Push Fail: ' . "  ";
+            echo 'Error Message: ' . $e->getMessage() .  "  ";
+            //response timeout means your request has probably be received by JPUsh Server,please check that whether need to be pushed again.
+            echo 'IsResponseTimeout: ' . $e->isResponseTimeout .  "  ";
+        }
+
+    }
+
+}
+
 

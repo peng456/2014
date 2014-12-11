@@ -38,7 +38,7 @@ if($period['is_readholiday'] == 0)     //不提供
 //不可用时间
 $date =  (int) ($data['time']/86400);
 $time = time();
-$inavailble_time    = model('mechanic_period_record')->get_list(array('select'=>'time_period','mechanic_id'=>$data['mechanic_id'],'date'=>$date,'where'=>"status = 1 or  deadline > $time"));
+$inavailble_time    = model('mechanic_period_record')->get_list(array('select'=>'time_period','mechanic_id'=>$data['mechanic_id'],'date'=>$date,'status'=>1,'where'=>"(status = 1 or  deadline > $time)"));
 
 //可用时间   $availble_time  =  $availble_time_week -$inavailble_time
 $temp = json_decode($availble_time_week["$week"]);

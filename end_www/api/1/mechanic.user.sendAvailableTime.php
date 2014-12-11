@@ -32,7 +32,7 @@ $data_insert['driver_id']  =  $token['owner_id'];
 $data_insert['date']  = $date ;
 $data_insert['time_period']  =  $data['time_period'];
 $data_insert['status']   =  0;
-$data_insert['deadline']   =  $time + 600;
+$data_insert['deadline'] =  $time + 600;
 $data_insert['create_time']  =  $time;
 
 $period_record_item  = model('mechanic_period_record')->set($data_insert,array('mechanic_id'=>$data['mechanic_id'],'driver_id'=>$token['owner_id'],'date'=>$date,'time_period'=>$data['time_period']));
@@ -41,4 +41,4 @@ if(!$period_record_item){
         die_json_msg('period_record表添加失败', 10101);
     }
 
-json_send(array('time_id'=>(int)$period_record_item));
+json_send(array('period_record_id'=>(int)$period_record_item));
