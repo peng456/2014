@@ -4,7 +4,7 @@
  *
  * @author deanmongel
  */
-$end_models['mechanic_answer'] = array(
+$end_models['mechanic_chat_group'] = array(
     'type' => 'list', //表示这是一个列表型的模型，对应一个数据库的表
     'name' => '答案列表',	//某型的名字，可以把一个栏目配置成某个模型
     'list_items'=>30, //后台每页显示
@@ -119,29 +119,29 @@ $end_models['mechanic_answer'] = array(
             'name'=>'创建时间',
             'width'=>'auto',
             'type'=>'text',
-            'filter'=>'show_mechanic_answer_date'
+            'filter'=>'show_mechanic_chat_group_date'
         ),
         '_options'=>array(//显示操作里面的按钮
             'name'=>'操作',
             'width'=>100,
-            'filter'=>'show_mechanic_answer_options'
+            'filter'=>'show_mechanic_chat_group_options'
         )
     )
 );
 
-function show_mechanic_answer_date($t)
+function show_mechanic_chat_group_date($t)
 {
     return date('Y-m-d H:i:s',$t);
 }
 
 //添加权限设置项
 $end_rights[] = array(
-    'name'=>'mechanic_answer',
-    'description'=>'答案列表',
+    'name'=>'mechanic_chat_group',
+    'description'=>'问答列表',
     'rights'=>array('view','delete','update','add')
 );
 
-function show_mechanic_answer_options($item)
+function show_mechanic_chat_group_options($item)
 {
     $id = 'a_id';
     end_show_view_button($item[$id]);

@@ -4,7 +4,7 @@
  *
  * @author deanmongel
  */
-$end_models['mechanic_question_mechanic'] = array(
+$end_models['mechanic_driver_mechanic_question'] = array(
     'type' => 'list', //表示这是一个列表型的模型，对应一个数据库的表
     'name' => '问题技师关系列表',	//某型的名字，可以把一个栏目配置成某个模型
     'list_items'=>30, //后台每页显示
@@ -69,26 +69,26 @@ $end_models['mechanic_question_mechanic'] = array(
         '_options'=>array(//显示操作里面的按钮
             'name'=>'操作',
             'width'=>100,
-            'filter'=>'show_mechanic_question_mechanic_options'
+            'filter'=>'show_mechanic_driver_mechanic_question_options'
         )
     )
 );
 
-function show_mechanic_question_mechanic_date($t)
+function show_mechanic_driver_mechanic_question_date($t)
 {
     return date('Y-m-d H:i:s',$t);
 }
 
 //添加权限设置项
 $end_rights[] = array(
-    'name'=>'mechanic_question_mechanic',
-    'description'=>'问题技师关系列表',
+    'name'=>'mechanic_driver_mechanic_question',
+    'description'=>'问题技师车友关系列表',
     'rights'=>array('view','delete','update','add')
 );
 
-function show_mechanic_question_mechanic_options($item)
+function show_mechanic_driver_mechanic_question_options($item)
 {
-    $id = 'qm_id';
+    $id = 'id';
     end_show_view_button($item[$id]);
     end_show_edit_button($item[$id]);
     end_show_delete_button($item[$id]);

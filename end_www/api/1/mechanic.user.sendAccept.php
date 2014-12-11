@@ -21,6 +21,13 @@ if (!$token)
 {
     die_json_msg('access_token不可用', 10600);
 }
+
+$select_qdata = model('mechanic_question')->get_one(array('q_id'=>$data['q_id'])) ;
+if ($select_qdata['q_status'] > 1)
+{
+	die_json_msg('车友已选择技师',10010) ;
+}
+
 $now_time = time();
 $accept_item  = model('mechanic_accept')->set(array('q_id'=>(int)$data['q_id'],'mechanic_user_id'=>(int)$token['owner_id'],'create_time'=>$now_time,'is_push'=>0),array('q_id'=>(int)$data['q_id'],'mechanic_user_id'=>(int)$token['owner_id']));
 
