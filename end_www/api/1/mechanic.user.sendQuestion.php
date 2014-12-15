@@ -5,6 +5,19 @@
  *
  * @author zhanglipeng  2014/10/19 23:22
  */
+//require_once  $_SERVER['DOCUMENT_ROOT']."/mechanic/vendor/autoload.php";
+
+
+require_once  $_SERVER['DOCUMENT_ROOT']."/vendor/autoload.php";
+
+use JPush\Model as M;
+use JPush\JPushClient;
+use JPush\JPushLog;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+use JPush\Exception\APIConnectionException;
+use JPush\Exception\APIRequestException;
 
 $data = $_POST;
 
@@ -298,9 +311,9 @@ if($data['type'] == 3 ){   //快捷电话咨询
 
 // insert  into table end_mechanic_driver_mechanic_question  : record relation  q_id  and   mechanic_id
    $time  = time();
-   $insert_relation_sql = "insert into end_mechanic_driver_mechanic_question(mechanic_id,driver_id,q_id,q_type,status,createtime) values";
+   $insert_relation_sql = "insert into end_mechanic_quickphone_request(mechanic_id,driver_id,q_id,q_type,status,create_time) values";
    foreach($mechanic_ids as $key => $values){
-       $relation_values[]="({$values['user_id']},{$token['ownner_id']},$question_item,3,0,$time)";
+       $relation_values[]="({$values['user_id']},{$token['owner_id']},$question_item,3,0,$time)";
        }
    $sql = $insert_relation_sql.implode(',',$relation_values);
    $insert_relation = $db->query($sql);
@@ -309,48 +322,51 @@ if($data['type'] == 3 ){   //快捷电话咨询
        }
 
 //问题 通过  极光推送  到技师端
-    $temp = array();
-   foreach($mechanic_ids as $key=>$value){
-       $temp[]=$value['jpush_id'];
-    }
-   $regis_ids = array('registration_id'=>$temp);
-   $master_secret = '779e8879efb1a54dc855bd30';
-   $app_key='4a215a78faccfed9e5679441';
-   $jpush_temp = new Jpushdemo($app_key,$master_secret);  //$id = "0a0009ff94f";
-   $aa = $jpush_temp->sendMessageById($regis_ids,"快捷电话咨询",array('msg_content'=>112,'title'=>'zhuosi','content_type'=>'','extras'=>'ss'));
 
-   $question_update = model('mechanic_question')->update($question_item,array('view_count'=>count($temp)));
-   if(!$question_update){
-      die_json_msg('question表更新失败', 10101);
-   }
-    json_send(array('q_id'=>$question_item));
+$master_secret = '779e8879efb1a54dc855bd30';
+$app_key='4a215a78faccfed9e5679441';
+$temp = array();
+foreach($mechanic_ids as $key=>$value){
+    if($value['jpush_id'] == null) continue;
+    $temp[]=$value['jpush_id'];
 }
+$regis_ids = json_encode(array('registration_id'=>$temp));
+JPushLog::setLogHandlers(array(new StreamHandler($_SERVER['DOCUMENT_ROOT'].'/aa/jpush.log', Logger::DEBUG)));
+$client = new JPushClient($app_key, $master_secret);
 
-json_send("参数错误",10010);
+//$temp = $client->report(1260874449);
+//var_dump($temp );
 
-	
+//easy push
+try {
+    $result = $client->push()
+        ->setPlatform(M\all)
+        ->setAudience($regis_ids)
+       // ->setAudience(M\all)
+        ->setNotification(M\notification('Hi, JPush'))
+        ->send();
+    $qusetion_msg_id = model('mechanic_question')->update($question_item,array('msg_id'=>$result->msg_id));
+    if(!$qusetion_msg_id){
+        die_json_msg('question表更新失败', 10101);
+    }
+    json_send(array('q_id'=>$question_item));
+} catch (APIRequestException $e) {
+    echo 'Push Fail.' . $br;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    echo 'Http Code : ' . $e->httpCode . $br;
+    echo 'code : ' . $e->code . $br;
+    echo 'Error Message : ' . $e->message . $br;
+    echo 'Response JSON : ' . $e->json . $br;
+    echo 'rateLimitLimit : ' . $e->rateLimitLimit . $br;
+    echo 'rateLimitRemaining : ' . $e->rateLimitRemaining . $br;
+    echo 'rateLimitReset : ' . $e->rateLimitReset . $br;
+} catch (APIConnectionException $e) {
+    echo 'Push Fail: ' . $br;
+    echo 'Error Message: ' . $e->getMessage() . $br;
+    //response timeout means your request has probably be received by JPUsh Server,please check that whether need to be pushed again.
+    echo 'IsResponseTimeout: ' . $e->isResponseTimeout . $br;
+}
+}
 
 
 
