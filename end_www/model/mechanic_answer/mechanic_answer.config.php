@@ -143,7 +143,7 @@ $end_rights[] = array(
 
 function show_mechanic_answer_options($item)
 {
-    $id = 'a_id';
+    $id = 'id';
     end_show_view_button($item[$id]);
     end_show_edit_button($item[$id]);
     end_show_delete_button($item[$id]);

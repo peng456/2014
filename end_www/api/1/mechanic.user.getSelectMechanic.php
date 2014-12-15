@@ -69,7 +69,7 @@ if ($data['old_flag']==0)
 }
 else
 {
-	$data['order_type'] = 2 ; //目前阶段暂不考虑排序作用，使用相应时间顺序作为排序
+	$data['order_type'] = 2 ; //目前阶段暂不考虑排序作用，使用响应时间顺序作为排序
 
     switch($data['order_type']){
 

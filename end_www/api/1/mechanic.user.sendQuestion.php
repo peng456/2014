@@ -282,12 +282,12 @@ if($data['type'] == 3 ){   //快捷电话咨询
 
 
     $now_time_range = $now_time - 60;
-    $question_item = model('mechanic_question')->set($data_insert_question,array('driver_user_id'=>$token['owner_id'],'q_type_firstclass'=>$data['q_type_firstclass'],'q_type_secondclass'=>$data['q_type_secondclass'],'q_status'=>3,'where'=>"create_time > $now_time_range"));
+    $question_item = model('mechanic_question')->set($data_insert_question,array('driver_user_id'=>$token['owner_id'],'q_type_firstclass'=>$data['q_type_firstclass'],'q_type_secondclass'=>$data['q_type_secondclass'],'type'=>3,'where'=>"create_time > $now_time_range"));
     if(!$question_item)
     {
         die_json_msg('question表增加失败', 10101);
     }
-    $mechanic_driver_mechanic_question_item = model('mechanic_driver_mechanic_question')->get_one(array('q_id'=>$question_item));
+    $mechanic_driver_mechanic_question_item = model('mechanic_quickphone_request')->get_one(array('q_id'=>$question_item));
     if($mechanic_driver_mechanic_question_item){
         die_json_msg('您在一分钟内已经提过此问题', 10101);
     }
@@ -298,9 +298,9 @@ if($data['type'] == 3 ){   //快捷电话咨询
 
 // insert  into table end_mechanic_driver_mechanic_question  : record relation  q_id  and   mechanic_id
    $time  = time();
-   $insert_relation_sql = "insert into end_mechanic_driver_mechanic_question(mechanic_id,driver_id,q_id,q_type,status,createtime) values";
+   $insert_relation_sql = "insert into end_mechanic_quickphone_request(mechanic_id,driver_id,q_id,q_type,status,create_time) values";
    foreach($mechanic_ids as $key => $values){
-       $relation_values[]="({$values['user_id']},{$token['ownner_id']},$question_item,3,0,$time)";
+       $relation_values[]="({$values['user_id']},{$token['owner_id']},$question_item,3,0,$time)";
        }
    $sql = $insert_relation_sql.implode(',',$relation_values);
    $insert_relation = $db->query($sql);
@@ -317,12 +317,8 @@ if($data['type'] == 3 ){   //快捷电话咨询
    $master_secret = '779e8879efb1a54dc855bd30';
    $app_key='4a215a78faccfed9e5679441';
    $jpush_temp = new Jpushdemo($app_key,$master_secret);  //$id = "0a0009ff94f";
-   $aa = $jpush_temp->sendMessageById($regis_ids,"快捷电话咨询",array('msg_content'=>112,'title'=>'zhuosi','content_type'=>'','extras'=>'ss'));
-
-   $question_update = model('mechanic_question')->update($question_item,array('view_count'=>count($temp)));
-   if(!$question_update){
-      die_json_msg('question表更新失败', 10101);
-   }
+   //$aa = $jpush_temp->sendMessageById($regis_ids,"快捷电话咨询",array('msg_content'=>112,'title'=>'zhuosi','content_type'=>'','extras'=>'ss'));
+   
     json_send(array('q_id'=>$question_item));
 }
 
