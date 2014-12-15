@@ -67,8 +67,7 @@ json_send(array('count'=>(int)$count,'data'=>$data_send) ) ;
 
 
 if($data['type'] == 1){
-    $question_sql = "select question.* from end_mechanic_question as question inner join  end_mechanic_driver_mechanic_question as d_m_q using(q_id)   where d_m_q.mechanic_id  = {$mechanic_user_id} and question.type = 2  order by question.create_time DESC limit {$from},10";
-  //  $question_sql = "select question.* from end_mechanic_question as question inner join  end_mechanic_quickphone_request as q_r using(q_id)   where q_r.mechanic_id  = {$mechanic_user_id} and question.type = 3 and q_r.staus in(0,1) order by question.create_time DESC limit {$from},10";
+    $question_sql = "select question.* from end_mechanic_question as question inner join  end_mechanic_driver_mechanic_question as d_m_q using(q_id)   where d_m_q.mechanic_id  = {$mechanic_user_id} and (question.type = 2 or question.type = 3) order by question.create_time DESC limit {$from},10";
 
     $question_items = model('mechanic_question')->get_list(array('_custom_sql'=>$question_sql));
 
