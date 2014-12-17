@@ -93,8 +93,8 @@ if($data['type'] == 1){
             'type'=>(int)$value['type'] ,
             'q_type_firstclass'=>(string)$q_type_firstclass['content'],
             'q_type_secondclass'=>(string)$q_type_secondclass['content'],
-             'text'=>(string)$value['text'] ,
-             'pic_data'=>"" ,
+            // 'text'=>(string)$value['text'] ,
+            // 'pic_data'=>$pictures ,
             'car_brand'=>(string)$brand_item['brand_name'] ,
             'car_brand_avatar'=>(string)$brand_item['brand_avatar'],
             'car_series'=>(string)$series_item['series'],
@@ -114,7 +114,7 @@ if($data['type'] == 1){
     {
         $driver_item = model('mechanic_user')->get_one($value['driver_user_id']);
         if(!$driver_item)continue;
-        $pictures = json_decode($value['picture']);
+        $pictures = json_decode($value['picture']) ;
         $q_type_firstclass  = model('mechanic_question_type_first')->get_one($value['q_type_firstclass']);
         $q_type_secondclass = model('mechanic_question_type')->get_one($value['q_type_secondclass']);
 
