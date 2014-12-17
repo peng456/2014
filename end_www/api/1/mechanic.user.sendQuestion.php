@@ -5,6 +5,18 @@
  *
  * @author zhanglipeng  2014/10/19 23:22
  */
+//require_once  $_SERVER['DOCUMENT_ROOT']."/vendor/autoload.php";
+require_once  $_SERVER['DOCUMENT_ROOT']."/mechanic/vendor/autoload.php";
+
+use JPush\Model as M;
+use JPush\JPushClient;
+use JPush\JPushLog;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+use JPush\Exception\APIConnectionException;
+use JPush\Exception\APIRequestException;
+
 
 $data = $_POST;
 
@@ -309,17 +321,40 @@ if($data['type'] == 3 ){   //快捷电话咨询
        }
 
 //问题 通过  极光推送  到技师端
+//    $master_secret = '779e8879efb1a54dc855bd30';
+//    $app_key='4a215a78faccfed9e5679441';
+    $master_secret = 'e556f96cd4b2bf267f4192ea';
+    $app_key='91360bada1db676c043111a0';
     $temp = array();
-   foreach($mechanic_ids as $key=>$value){
-       $temp[]=$value['jpush_id'];
+    foreach($mechanic_ids as $key=>$value){
+        if($value['jpush_id'] == null) continue;
+        $temp[]=$value['jpush_id'];
     }
-   $regis_ids = array('registration_id'=>$temp);
-   $master_secret = '779e8879efb1a54dc855bd30';
-   $app_key='4a215a78faccfed9e5679441';
-   $jpush_temp = new Jpushdemo($app_key,$master_secret);  //$id = "0a0009ff94f";
-   //$aa = $jpush_temp->sendMessageById($regis_ids,"快捷电话咨询",array('msg_content'=>112,'title'=>'zhuosi','content_type'=>'','extras'=>'ss'));
-   
-    json_send(array('q_id'=>$question_item));
+    $regis_ids = json_encode(array('registration_id'=>$temp));
+    JPushLog::setLogHandlers(array(new StreamHandler($_SERVER['DOCUMENT_ROOT'].'/mechanic/log/jpush.log', Logger::DEBUG)));
+    $client = new JPushClient($app_key, $master_secret);
+
+//$temp = $client->report(1260874449);
+//var_dump($temp );
+
+//easy push
+    try {
+        $result = $client->push()
+            ->setPlatform(M\all)
+            ->setAudience($regis_ids)
+            // ->setAudience(M\all)
+            ->setNotification(M\notification('快捷电话，外快挣得就是快'))
+            ->send();
+        $qusetion_msg_id = model('mechanic_question')->update($question_item,array('msg_id'=>$result->msg_id));
+        if(!$qusetion_msg_id){
+            die_json_msg('question表更新失败', 10101);
+        }
+        json_send(array('q_id'=>$question_item));
+    } catch (APIRequestException $e) {
+        die_json_msg('服务器内部错误', 10101);
+    } catch (APIConnectionException $e) {
+        die_json_msg('服务器比较繁忙，请稍后再试', 10101);
+    }
 }
 
 json_send("参数错误",10010);

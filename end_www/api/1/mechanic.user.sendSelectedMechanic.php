@@ -8,7 +8,7 @@
  
 $data = $_POST;
 
-if (!isset($data['access_token']) ||!isset($data['count']) || !is_numeric($data['count'])||!isset($data['q_id']) || !is_numeric($data['q_id'])|| !isset($data['selected_mechanic']))
+if (!isset($data['access_token']) ||!isset($data['q_id']) || !is_numeric($data['q_id'])|| !isset($data['mechanic_id']))
 {
 	die_json_msg('参数错误', 10100);
 }
@@ -20,16 +20,10 @@ if (!$item)
     die_json_msg('access_token不可用',10600);
 
 $driver_user_id = $item['owner_id'] ;
-$selected_mechanic = json_decode($data['selected_mechanic'],true) ;
-if(!$selected_mechanic)
-	die_json_msg('json 格式错误',21100) ;
+$res = model('mechanic_driver_mechanic_question')->set(array('q_id'=>$data['q_id'],'mechanic_id'=>$data['mechanic_id'],'driver_id'=>$driver_user_id,'status'=>0,'q_type'=>3,'createtime'=>time()),array('q_id'=>$data['q_id']));
+if(!$res)
+	die_json_msg('mechanic_driver_mechanic_question表更新失败',10101) ;
 
-foreach ($selected_mechanic['selected_mechanic'] as $key => $value) 
-{
-	$res = model('mechanic_driver_mechanic_question')->set(array('q_id'=>$data['q_id'],'mechanic_id'=>$value,'driver_id'=>$driver_user_id,'createtime'=>time()),array('q_id'=>$data['q_id']));
-	if(!$res)
-		die_json_msg('mechanic_driver_mechanic_question表更新失败',10101) ;
-}
 
 $res = model('mechanic_question')->update($data['q_id'],array('is_accept'=>1)) ;
 if(!$res)

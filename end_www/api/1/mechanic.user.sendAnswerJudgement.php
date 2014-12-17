@@ -61,7 +61,7 @@ if(isset($data['comment']))
 {
     $data_judge_insert['comment'] = $data['comment'];
 }
-
+if($question_item['type'] != 3){
 if($question_item['q_status'] < 2){
     $chat_group_update = model('mechanic_chat_group')->set(array('q_end_time'=>$data['q_end_time']),array('q_id'=>$data['q_id']));
     if(!$chat_group_update){
@@ -105,6 +105,7 @@ if($question_item['q_status'] < 2){
         }
 
     }
+}
 }
 
 if(!model('mechanic_judgescore')->add($data_judge_insert))

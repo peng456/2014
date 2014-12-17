@@ -8,7 +8,7 @@
  
 $data = $_POST;
 
-if (!isset($data['phone']) || !isset($data['password']))
+if (!isset($data['phone']) || !isset($data['password']) || !isset($data['jpush_id']))
 {
 	die_json_msg('参数错误', 10100);
 }
@@ -26,8 +26,15 @@ if (!$item)
 	die_json_msg('用户名或密码错误', 10400);
 }
 
+//更新用户极光推送ID
+$jpush_item = model('mechanic_user')->update($item['user_id'],array('jpush_id'=>$data['jpush_id']));
+if (!$jpush_item)
+{
+    die_json_msg('user表更新失败', 10101);
+}
+
 # generate pub_id for obd
- $db->query("update end_mechanic_token set status='invalid' where token_type='user' and owner_id=$item[user_id] and status='valid'");
+ $db->query("update end_mechanic_token set status='invalid' where token_type='user' and owner_id={$item['user_id']} and status='valid'");
 while (1)
 {
 	$new_token = hash_random($username, 'sha256');
