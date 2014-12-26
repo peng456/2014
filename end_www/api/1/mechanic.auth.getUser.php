@@ -181,7 +181,7 @@ if ($data['role'] == "mechanic"){             //技工用户
 
  //添加专注车型
     if(isset($data['professional_brand'])){
-        $professional_brand = explode(",", $data['professional_brand']);
+        $professional_brand = array_filter(explode(",", $data['professional_brand']));
         $professional_brand_sql = "insert into end_mechanic_professional_brand(mechanic_id,brand_id,createtime) values";
         $str_arraay = array();
 
@@ -198,7 +198,7 @@ if ($data['role'] == "mechanic"){             //技工用户
 
 //添加擅长领域
     if(isset($data['professional_field'])){
-        $professional_field = explode(",", $data['professional_field']);
+        $professional_field = array_filter(explode(",", $data['professional_field']));
         $professional_field_sql = "insert into end_mechanic_professional_field(mechanic_id,field_id,createtime) values";
         $str_arraay = array();
         foreach($professional_field as $key => $val)
@@ -263,6 +263,10 @@ if ($data['role'] == "mechanic"){             //技工用户
     if($reg_user['error']){
         die_json_msg('环信用户增加失败', 10101);
     }
+//    if($reg_user['status'] != 200){
+//        error_log($reg_user['error']."\r\n",3,'errors.log');
+//        die_json_msg('环信用户增加失败', 10101);
+//    }
     $user_insert_data['huanxin_id'] = $user_id ;
     $user_insert_data['huanxin_password'] = $user_password;
 

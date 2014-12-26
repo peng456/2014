@@ -37,6 +37,9 @@ include_once(END_SYSTEM_DIR.'plugin/qiniu/io.php');
 include_once(END_SYSTEM_DIR.'plugin/qiniu/rs.php');
 include_once(END_SYSTEM_DIR.'plugin/qiniu/http.php');
 
+include_once(END_SYSTEM_DIR.'plugin/weixin_base/wechatAPISDK.php');
+include_once(END_SYSTEM_DIR.'plugin/ali_pay/alipay_notify.class.php');
+
 //载入系统所需的输出相关辅助函数库，包含 ip() ,cn_substr(), en_substr() ,end_page() 等最常用的辅助函数
 helper('html');
 

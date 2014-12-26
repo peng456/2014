@@ -304,8 +304,16 @@ if($data['type'] == 3 ){   //快捷电话咨询
         die_json_msg('您在一分钟内已经提过此问题', 10101);
     }
        // 选择合适的技师
-    $select_mechanic = "select user_id,jpush_id from end_mechanic_user where  role = 'mechanic'";
-    $mechanic_ids = model('mechanic_user')->get_list(array('_custom_sql'=>$select_mechanic));
+
+
+
+    $mechanic_select_sql ="SELECT DISTINCT users.user_id,users.jpush_id from end_mechanic_user as users
+                           INNER JOIN (end_mechanic_professional_field as pro_field ,end_mechanic_type_field as type_field )
+                           on users.user_id = pro_field.mechanic_id and pro_field.field_id = type_field.field
+                           where type_field.question_type = {$data['q_type_firstclass']}";
+
+ //   $select_mechanic = "select user_id,jpush_id from end_mechanic_user where  role = 'mechanic'";
+    $mechanic_ids = model('mechanic_user')->get_list(array('_custom_sql'=>$mechanic_select_sql));
 
 
 // insert  into table end_mechanic_driver_mechanic_question  : record relation  q_id  and   mechanic_id

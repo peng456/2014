@@ -25,7 +25,7 @@ switch ($data['type']) {
 		foreach ($brand_data as $key => $value) 
 		{
 			$count++ ;
-			$data[] = array('id'=>(int)$value['car_brand_id'],'content'=>$value['brand_name']) ;
+			$data[] = array('id'=>(int)$value['car_brand_id'],'content'=>$value['brand_name'],'car_brand_avatar'=>$value['brand_avatar']) ;
 		}
 		json_send(array('count'=>(int)$count,'data'=>$data)) ;
 		break;
@@ -55,7 +55,11 @@ switch ($data['type']) {
 		break;
 
 	case 'q_type':
+        if(!isset($data['parent']) || ($data['parent'] == 0)){
+            $model_data = model('mechanic_question_type_first')->get_list() ;
+        }else{
 		$model_data = model('mechanic_question_type')->get_list(array('p_id'=>$data['parent'])) ;
+        }
 		$count = 0 ;
 		$data = array() ;
 		foreach ($model_data as $key => $value) 

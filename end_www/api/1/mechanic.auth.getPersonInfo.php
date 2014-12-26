@@ -86,6 +86,31 @@ if($userdata['role'] && $userdata['joininfo_id'] )
         die_json_msg('city表、brand表',20400);
     }
 
+    //获取 技师 擅长领域
+    $professional_field_sql = "select field_name from end_mechanic_field where id in(select field_id from end_mechanic_professional_field where mechanic_id = {$userdata['user_id']})";
+    $professional_field_items = model('mechanic_professional_field')->get_list(array('_custom_sql'=>$professional_field_sql));
+    if($professional_field_items === null){
+        die_json_msg('professional_field表查询失败', 10101);
+    }
+    $professional_field = array();
+    foreach ($professional_field_items as $key_field => $value_field)
+    {
+        $professional_field[$key_field] = $value_field['field_name'];
+
+    }
+
+    //获取 技师 专注车型
+    $professional_brand_sql = "select brand_name from end_mechanic_car_brand where car_brand_id in(select brand_id from end_mechanic_professional_brand where mechanic_id = {$userdata['user_id']})";
+    $professional_brand_items = model('mechanic_professional_field')->get_list(array('_custom_sql'=>$professional_brand_sql));
+    if($professional_brand_items === null){
+        die_json_msg('professional_brand表查询失败', 10101);
+    }
+    $professional_brand = array();
+    foreach ($professional_brand_items as $key_brand => $value_brand)
+    {
+        $professional_brand[$key_brand] = $value_brand['brand_name'];
+    }
+
 
 
     $data = array(
@@ -96,6 +121,8 @@ if($userdata['role'] && $userdata['joininfo_id'] )
         'reputation'=>(int)$joininfo['reputation'] ,
         'work_year'=>round((float)((time()-$joininfo['work_year'])/31536000),1) ,
         'workbrand'=>(string)$workbrand['brand_name'] ,
+        'professional_brand'=>$professional_brand ,
+        'professional_field'=>$professional_field ,
         'workcity'=>(string)$workcityname ,
         'workplace'=>(string)$joininfo['workplace'] ,
         'technical_title'=>(string)$joininfo['technical_title'] ,
