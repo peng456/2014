@@ -21,7 +21,7 @@ class MODEL_MECHANIC_APPVERSION extends MODEL
 		$data['platform'] = addslashes($data['platform']);
 		# 将以前当前的appversion设置为旧版本
 		global $db;
-		$db->query("UPDATE end_vanet_appversion set status=0 where platform='$data[platform]' and status=1");
+		$db->query("UPDATE end_mechanic_appversion set status=0 where platform='$data[platform]' and status=1");
 		return parent::add($data);
 	}
 }
